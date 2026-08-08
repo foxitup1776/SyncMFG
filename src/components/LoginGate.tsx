@@ -5,15 +5,22 @@ import { setAuthenticated } from '../auth/session'
 export function LoginGate({ onSuccess }: { onSuccess: () => void }) {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  const [busy, setBusy] = useState(false)
 
-  function handleSubmit(e: FormEvent) {
+  async function handleSubmit(e: FormEvent) {
     e.preventDefault()
-    if (isValidPassword(password)) {
-      setAuthenticated(true)
-      onSuccess()
-      return
+    setBusy(true)
+    setError('')
+    try {
+      if (await isValidPassword(password)) {
+        setAuthenticated(true)
+        onSuccess()
+        return
+      }
+      setError('That password did not match. Try again.')
+    } finally {
+      setBusy(false)
     }
-    setError('That password did not match. Try again.')
   }
 
   return (
@@ -22,7 +29,7 @@ export function LoginGate({ onSuccess }: { onSuccess: () => void }) {
         <p className="brand-mark">SYNCMFG</p>
         <h1>Sign in</h1>
         <p className="login-sub">
-          Private Lean Six Sigma workbench. Enter the shared site password to
+          Private Lean Six Sigma workbench. Enter a shared site password to
           continue.
         </p>
         <form onSubmit={handleSubmit} className="login-form">
@@ -39,8 +46,8 @@ export function LoginGate({ onSuccess }: { onSuccess: () => void }) {
             autoFocus
           />
           {error ? <p className="form-error" role="alert">{error}</p> : null}
-          <button type="submit" className="btn primary">
-            Enter
+          <button type="submit" className="btn primary" disabled={busy}>
+            {busy ? 'Checking…' : 'Enter'}
           </button>
         </form>
       </div>

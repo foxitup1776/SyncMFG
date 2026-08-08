@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { DatasetPicker } from '../components/DatasetPicker'
 import { PlainReport } from '../components/PlainReport'
 import {
@@ -7,6 +7,7 @@ import {
   RunChart,
 } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
+import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset } from '../storage/datasets'
 import { numericColumn } from '../stats/column'
 import {
@@ -19,8 +20,8 @@ import {
 } from '../stats/descriptive'
 
 export function VisualTool() {
-  const [datasetId, setDatasetId] = useState('')
-  const [column, setColumn] = useState('')
+  const [datasetId, setDatasetId] = usePersistedState('tool.visual.dataset', '')
+  const [column, setColumn] = usePersistedState('tool.visual.column', '')
 
   const dataset = datasetId ? getDataset(datasetId) : undefined
   const values = useMemo(

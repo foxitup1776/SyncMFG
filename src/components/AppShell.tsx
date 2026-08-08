@@ -5,16 +5,37 @@ export type AppView =
   | 'home'
   | 'data'
   | 'tools'
+  | 'settings'
   | 'visual'
   | 'imr'
   | 'capability'
   | 'montecarlo'
+  | 'pareto'
+  | 'ttest'
+  | 'regression'
+  | 'xbarr'
+  | 'gage'
+  | 'compare'
 
 const NAV: { id: AppView; label: string }[] = [
   { id: 'home', label: 'Home' },
   { id: 'data', label: 'Data' },
   { id: 'tools', label: 'Tools' },
+  { id: 'settings', label: 'Settings' },
 ]
+
+const TOOL_VIEWS = new Set<AppView>([
+  'visual',
+  'imr',
+  'capability',
+  'montecarlo',
+  'pareto',
+  'ttest',
+  'regression',
+  'xbarr',
+  'gage',
+  'compare',
+])
 
 export function AppShell({
   view,
@@ -25,17 +46,11 @@ export function AppShell({
   onNavigate: (v: AppView) => void
   children: ReactNode
 }) {
-  const navActive =
-    view === 'visual' ||
-    view === 'imr' ||
-    view === 'capability' ||
-    view === 'montecarlo'
-      ? 'tools'
-      : view
+  const navActive = TOOL_VIEWS.has(view) ? 'tools' : view
 
   return (
     <div className="app-shell">
-      <header className="topbar">
+      <header className="topbar no-print">
         <button
           type="button"
           className="brand"

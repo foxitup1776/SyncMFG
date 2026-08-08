@@ -7,7 +7,7 @@ export function HomePage({ onNavigate }: { onNavigate: (v: AppView) => void }) {
         <p className="eyebrow">Continuous improvement workbench</p>
         <h1>SYNCMFG</h1>
         <p className="hero-copy">
-          Paste Excel data, run Lean Six Sigma analyses, and email a
+          Paste Excel data, run Lean Six Sigma analyses, and email or print a
           plain-English report — from home or any factory floor.
         </p>
         <div className="row actions">
@@ -29,24 +29,23 @@ export function HomePage({ onNavigate }: { onNavigate: (v: AppView) => void }) {
       </section>
 
       <section className="panel soft">
-        <h2>Ready to use</h2>
+        <h2>What you can do</h2>
         <ol className="roadmap">
           <li>
-            <strong>Data + summary</strong> — paste or upload; auto-delete after
-            30 days on this device.
+            <strong>Load data</strong> — paste, upload, or install sample
+            datasets.
           </li>
           <li>
-            <strong>Histogram, box plot, run chart</strong> — first look at
-            shape and order.
+            <strong>Visualize & control</strong> — hist/box/run, I-MR with
+            Western Electric, X̄-R, compare columns.
           </li>
           <li>
-            <strong>I-MR control chart</strong> — is this batch stable?
+            <strong>Decide</strong> — capability, Pareto, t-test, regression,
+            Gage R&R, Monte Carlo.
           </li>
           <li>
-            <strong>Process capability</strong> — Cp / Cpk vs customer limits.
-          </li>
-          <li>
-            <strong>Time-study Monte Carlo</strong> — step times in, risk out.
+            <strong>Share</strong> — email, print/PDF, optional server send +
+            FoxHome CouchDB sync in Settings.
           </li>
         </ol>
       </section>

@@ -655,6 +655,45 @@ select {
   padding-left: 0;
 }
 
+.check-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1rem;
+  margin: 0.75rem 0 0.25rem;
+}
+
+.check-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.settings-page a {
+  color: var(--accent);
+}
+
+@media print {
+  body {
+    background: #fff !important;
+  }
+
+  .no-print,
+  .topbar,
+  .back-link,
+  .share-report {
+    display: none !important;
+  }
+
+  .panel,
+  .chart-card,
+  .plain-report {
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+}
+
 @media (max-width: 720px) {
   .topbar {
     flex-wrap: wrap;

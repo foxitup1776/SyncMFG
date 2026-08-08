@@ -2,6 +2,7 @@ import { useMemo, useState, type ChangeEvent } from 'react'
 import { parseFile, parsePastedText } from '../data/parseTable'
 import { buildDataReport, summarizeColumns } from '../data/summarize'
 import type { DataTable } from '../data/types'
+import { installSampleDatasets } from '../data/samples'
 import {
   daysUntilExpiry,
   deleteDataset,
@@ -143,6 +144,18 @@ export function DataIngest() {
               Save locally (30 days)
             </button>
           ) : null}
+          <button
+            type="button"
+            className="btn secondary"
+            onClick={() => {
+              const names = installSampleDatasets()
+              setLibrary(listDatasets())
+              setError('')
+              setName(names[0] ?? 'Sample dataset')
+            }}
+          >
+            Load sample datasets
+          </button>
         </div>
         {error ? (
           <p className="form-error" role="alert">

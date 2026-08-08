@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { PlainReport } from '../components/PlainReport'
 import { DistributionChart } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
+import { usePersistedState } from '../hooks/usePersistedState'
 import { fmt } from '../stats/descriptive'
 import {
   runTimeStudyMonteCarlo,
@@ -20,13 +21,13 @@ function newStep(partial?: Partial<ProcessStep>): ProcessStep {
 }
 
 export function MonteCarloTool() {
-  const [steps, setSteps] = useState<ProcessStep[]>([
+  const [steps, setSteps] = usePersistedState<ProcessStep[]>('tool.mc.steps', [
     newStep({ name: 'Load', min: 8, typical: 10, max: 15 }),
     newStep({ name: 'Cycle', min: 20, typical: 25, max: 35 }),
     newStep({ name: 'Inspect', min: 5, typical: 7, max: 12 }),
   ])
-  const [trials, setTrials] = useState(5000)
-  const [targetRaw, setTargetRaw] = useState('60')
+  const [trials, setTrials] = usePersistedState('tool.mc.trials', 5000)
+  const [targetRaw, setTargetRaw] = usePersistedState('tool.mc.target', '60')
   const [seedRun, setSeedRun] = useState(0)
 
   const target = targetRaw.trim() === '' ? null : Number(targetRaw)

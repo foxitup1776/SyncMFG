@@ -1,8 +1,9 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { DatasetPicker } from '../components/DatasetPicker'
 import { PlainReport } from '../components/PlainReport'
 import { HistogramChart } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
+import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset } from '../storage/datasets'
 import { numericColumn } from '../stats/column'
 import { computeCapability } from '../stats/capability'
@@ -16,10 +17,10 @@ function parseOptional(raw: string): number | null {
 }
 
 export function CapabilityTool() {
-  const [datasetId, setDatasetId] = useState('')
-  const [column, setColumn] = useState('')
-  const [uslRaw, setUslRaw] = useState('')
-  const [lslRaw, setLslRaw] = useState('')
+  const [datasetId, setDatasetId] = usePersistedState('tool.cap.dataset', '')
+  const [column, setColumn] = usePersistedState('tool.cap.column', '')
+  const [uslRaw, setUslRaw] = usePersistedState('tool.cap.usl', '')
+  const [lslRaw, setLslRaw] = usePersistedState('tool.cap.lsl', '')
 
   const dataset = datasetId ? getDataset(datasetId) : undefined
   const values = useMemo(

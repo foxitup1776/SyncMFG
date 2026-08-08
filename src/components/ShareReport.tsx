@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import type { AnalysisReport } from '../data/types'
+import { loadSettings, saveSettings } from '../storage/settings'
 
 function reportToPlainText(report: AnalysisReport): string {
   const lines = [
@@ -41,10 +42,18 @@ function escapeHtml(s: string): string {
 }
 
 export function ShareReport({ report }: { report: AnalysisReport }) {
-  const [email, setEmail] = useState('')
+  const initial = loadSettings()
+  const [email, setEmail] = useState(initial.lastEmail)
   const [note, setNote] = useState('')
+  const [busy, setBusy] = useState(false)
+  const hasServer = Boolean(initial.web3formsKey)
 
-  function handleEmail() {
+  function rememberEmail(value: string) {
+    setEmail(value)
+    saveSettings({ ...loadSettings(), lastEmail: value })
+  }
+
+  function handleMailto() {
     const to = email.trim()
     if (!to || !to.includes('@')) {
       setNote('Enter a full email address (example: name@company.com).')
@@ -52,12 +61,51 @@ export function ShareReport({ report }: { report: AnalysisReport }) {
     }
     const body = reportToPlainText(report)
     const subject = `SYNCMFG: ${report.title}`
-    // mailto works from any network — opens the device mail app
-    const url = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
-    window.location.href = url
+    window.location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`
     setNote(
-      'Opened your email app with the report filled in. If the body looks cut off, use Download HTML and attach that file.',
+      'Opened your email app with the report filled in. If the body looks cut off, use Download HTML or Print/PDF.',
     )
+  }
+
+  async function handleServerSend() {
+    const to = email.trim()
+    const key = loadSettings().web3formsKey
+    if (!key) {
+      setNote('Add a Web3Forms key under Settings first.')
+      return
+    }
+    if (!to || !to.includes('@')) {
+      setNote('Enter a full email address.')
+      return
+    }
+    setBusy(true)
+    setNote('')
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          access_key: key,
+          subject: `SYNCMFG: ${report.title}`,
+          from_name: 'SYNCMFG',
+          email: to,
+          message: reportToPlainText(report),
+        }),
+      })
+      const data = (await res.json()) as { success?: boolean; message?: string }
+      if (!res.ok || !data.success) {
+        throw new Error(data.message || 'Send failed')
+      }
+      setNote(`Sent from SYNCMFG to ${to}.`)
+    } catch (err) {
+      setNote(
+        err instanceof Error
+          ? err.message
+          : 'Could not send. Check your Web3Forms key or use Email / Download.',
+      )
+    } finally {
+      setBusy(false)
+    }
   }
 
   function handleDownload() {
@@ -71,6 +119,20 @@ export function ShareReport({ report }: { report: AnalysisReport }) {
     setNote('Downloaded an HTML report you can attach to any email.')
   }
 
+  function handlePrint() {
+    const html = reportToHtml(report)
+    const w = window.open('', '_blank', 'noopener,noreferrer')
+    if (!w) {
+      setNote('Pop-up blocked — allow pop-ups or use Download HTML.')
+      return
+    }
+    w.document.write(html)
+    w.document.close()
+    w.focus()
+    w.print()
+    setNote('Print dialog opened — choose Save as PDF or a printer.')
+  }
+
   async function handleCopy() {
     try {
       await navigator.clipboard.writeText(reportToPlainText(report))
@@ -81,11 +143,11 @@ export function ShareReport({ report }: { report: AnalysisReport }) {
   }
 
   return (
-    <section className="share-report panel soft">
+    <section className="share-report panel soft no-print">
       <h3>Send or save this report</h3>
       <p className="lede">
-        Works from any factory Wi‑Fi. Email opens on your phone or laptop mail
-        app — no Pi required.
+        Works from any factory Wi‑Fi. Print/PDF is great for handing a supervisor
+        a clean page.
       </p>
       <label htmlFor="report-email">Email to</label>
       <input
@@ -94,13 +156,26 @@ export function ShareReport({ report }: { report: AnalysisReport }) {
         placeholder="name@company.com"
         value={email}
         onChange={(e) => {
-          setEmail(e.target.value)
+          rememberEmail(e.target.value)
           setNote('')
         }}
       />
       <div className="row actions">
-        <button type="button" className="btn primary" onClick={handleEmail}>
-          Email report
+        <button type="button" className="btn primary" onClick={handleMailto}>
+          Email (mail app)
+        </button>
+        {hasServer ? (
+          <button
+            type="button"
+            className="btn primary"
+            disabled={busy}
+            onClick={handleServerSend}
+          >
+            {busy ? 'Sending…' : 'Send from SYNCMFG'}
+          </button>
+        ) : null}
+        <button type="button" className="btn secondary" onClick={handlePrint}>
+          Print / PDF
         </button>
         <button type="button" className="btn secondary" onClick={handleDownload}>
           Download HTML

@@ -1,17 +1,20 @@
 # SYNCMFG
 
-Private Lean Six Sigma workbench — paste Excel data, run analyses, email plain-English reports from any factory Wi‑Fi.
+Private Lean Six Sigma workbench — paste Excel data, run analyses, email or print plain-English reports from any factory Wi‑Fi.
 
 **Live site:** https://foxitup1776.github.io/SyncMFG/
 
 ## Tools
 
-- **Data ingest** — paste from Excel or upload CSV/XLSX (auto-deletes after 30 days on the device)
-- **Histogram / Box / Run** — first look at shape and order
-- **I-MR control chart** — stability for one measurement column
-- **Process capability** — Cp, Cpk, Pp, Ppk vs specs
-- **Time-study Monte Carlo** — step times → risk and likely total time
-- **Email / download / copy report** — send results to any address
+- Data ingest + sample datasets (30-day local save)
+- Histogram / Box / Run, multi-column compare
+- I-MR with Western Electric rules, X̄-R
+- Process capability (Cp/Cpk/Pp/Ppk)
+- Pareto, 2-sample t-test, scatter/regression
+- Gage R&R (lite), time-study Monte Carlo
+- Email, Print/PDF, optional Web3Forms send
+- Settings: extra passwords, session length, FoxHome CouchDB sync
+- Installable PWA (Add to Home Screen)
 
 ## Local development
 
@@ -20,14 +23,8 @@ npm install
 npm run dev
 ```
 
-Password is set in `src/auth/passwords.ts`.
+Sign-in uses hashed site passwords (see `src/auth/passwords.ts`).
 
-## GitHub Pages (automatic)
+## GitHub Pages
 
-Push to `main` and GitHub Actions builds + publishes the site.
-
-1. Repo → **Settings** → **Pages**
-2. Source: **GitHub Actions**
-3. After the workflow finishes, open https://foxitup1776.github.io/SyncMFG/
-
-Data stays in the browser on each device (30-day purge). Emailing uses your device mail app so it works without the home Pi.
+Push to `main` — Actions builds and publishes automatically.

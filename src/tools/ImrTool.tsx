@@ -1,16 +1,18 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { DatasetPicker } from '../components/DatasetPicker'
 import { PlainReport } from '../components/PlainReport'
 import { ControlChart } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
+import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset } from '../storage/datasets'
 import { numericColumn } from '../stats/column'
 import { fmt } from '../stats/descriptive'
 import { computeImr } from '../stats/imr'
+import { westernElectricHits } from '../stats/westernElectric'
 
 export function ImrTool() {
-  const [datasetId, setDatasetId] = useState('')
-  const [column, setColumn] = useState('')
+  const [datasetId, setDatasetId] = usePersistedState('tool.imr.dataset', '')
+  const [column, setColumn] = usePersistedState('tool.imr.column', '')
 
   const dataset = datasetId ? getDataset(datasetId) : undefined
   const values = useMemo(
@@ -18,24 +20,45 @@ export function ImrTool() {
     [dataset, column],
   )
   const imr = useMemo(() => computeImr(values), [values])
+  const we = useMemo(
+    () =>
+      imr
+        ? westernElectricHits(imr.values, imr.xBar, imr.uclX, imr.lclX)
+        : [],
+    [imr],
+  )
+
+  const flagged = useMemo(() => {
+    if (!imr) return []
+    const set = new Set<number>([
+      ...imr.outOfControlX,
+      ...we.flatMap((h) => h.indexes),
+    ])
+    return [...set]
+  }, [imr, we])
 
   const report: AnalysisReport | null = useMemo(() => {
     if (!imr || !dataset) return null
-    const ooc = imr.outOfControlX.length
     return {
       title: `I-MR control chart — ${column}`,
       summary:
-        ooc === 0
-          ? `Using ${imr.values.length} points from “${dataset.name}”, the process looks stable on the Individuals chart — no points outside the control limits.`
-          : `Using ${imr.values.length} points from “${dataset.name}”, ${ooc} point(s) sit outside the Individuals control limits. That usually means a special cause worth investigating, not just normal noise.`,
+        we.length === 0
+          ? `Using ${imr.values.length} points from “${dataset.name}”, no Western Electric alarms fired. The process looks stable on these rules.`
+          : `Using ${imr.values.length} points from “${dataset.name}”, ${we.length} Western Electric rule(s) fired. Treat those as special-cause clues.`,
       bullets: [
         `Center line (average) = ${fmt(imr.xBar)}. Average moving range = ${fmt(imr.mrBar)}.`,
-        `Individuals limits: UCL ${fmt(imr.uclX)} · LCL ${fmt(imr.lclX)} (from average ± 2.66 × average moving range).`,
-        `Moving Range UCL = ${fmt(imr.uclMr)}. ${imr.outOfControlMr.length} moving-range point(s) above that limit.`,
-        ooc === 0
-          ? 'No Individuals points outside limits. You can move on to capability (Cp/Cpk) if you have customer specs.'
-          : `Out-of-control Individuals at row order: ${imr.outOfControlX.map((i) => i + 1).join(', ')}. Look at what changed at those times (tooling, material, shift, method).`,
-        'These control limits are the “voice of the process,” not the customer spec limits.',
+        `Individuals limits: UCL ${fmt(imr.uclX)} · LCL ${fmt(imr.lclX)}.`,
+        `Moving Range UCL = ${fmt(imr.uclMr)}. ${imr.outOfControlMr.length} MR point(s) above that limit.`,
+        ...we.map(
+          (h) =>
+            `${h.rule}: ${h.plain} Points (order): ${h.indexes
+              .map((i) => i + 1)
+              .join(', ')}.`,
+        ),
+        we.length === 0
+          ? 'You can move on to capability (Cp/Cpk) if you have customer specs.'
+          : 'Look at what changed near the flagged points (tooling, material, shift, method).',
+        'Control limits are the voice of the process — not the customer spec limits.',
       ],
       termsUsed: [
         'control limit',
@@ -43,18 +66,19 @@ export function ImrTool() {
         'special cause',
         'moving range',
         'i-mr',
+        'western electric',
         'sample',
       ],
     }
-  }, [imr, dataset, column])
+  }, [imr, dataset, column, we])
 
   return (
     <div className="tool-view">
       <section className="panel">
         <h2>I-MR control chart</h2>
         <p className="lede">
-          Best first stability check when you paste one measurement column from
-          a large batch (not live auto-data).
+          Stability check for one measurement column, including Western Electric
+          run rules (not only points outside limits).
         </p>
         <DatasetPicker
           datasetId={datasetId}
@@ -71,12 +95,12 @@ export function ImrTool() {
           <div className="chart-grid">
             <ControlChart
               title="Individuals (I) chart"
-              caption="Each point is one measurement. Red points are outside the calculated limits."
+              caption="Red points = outside limits or Western Electric alarms."
               points={imr.values}
               center={imr.xBar}
               ucl={imr.uclX}
               lcl={imr.lclX}
-              outIndexes={imr.outOfControlX}
+              outIndexes={flagged}
             />
             <ControlChart
               title="Moving Range (MR) chart"

@@ -144,6 +144,72 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
     plain:
       'A simple uncertainty model using three numbers you know from the floor: fastest, typical, and slowest time for a step.',
   },
+  pareto: {
+    id: 'pareto',
+    term: 'Pareto',
+    plain:
+      'Rank problems from biggest to smallest. Often a few causes create most of the pain — the “vital few.”',
+  },
+  'vital few': {
+    id: 'vital-few',
+    term: 'Vital few',
+    plain:
+      'The small number of causes that create most of the defects or delay. Fix these before the long tail of tiny issues.',
+  },
+  '2-sample t-test': {
+    id: 'two-sample-t',
+    term: '2-sample t-test',
+    plain:
+      'A check for whether two groups’ averages differ by more than random noise would usually allow.',
+  },
+  correlation: {
+    id: 'correlation',
+    term: 'Correlation (r)',
+    plain:
+      'How tightly two measurements move together, from −1 (opposite) through 0 (no line) to +1 (same direction).',
+  },
+  regression: {
+    id: 'regression',
+    term: 'Regression',
+    plain:
+      'Fitting a line (or curve) so you can describe and predict one measurement from another.',
+  },
+  slope: {
+    id: 'slope',
+    term: 'Slope',
+    plain:
+      'How much Y changes when X goes up by one unit on the best-fit line.',
+  },
+  'xbar-r': {
+    id: 'xbar-r',
+    term: 'X̄-R chart',
+    plain:
+      'Control charts for subgrouped data: X̄ tracks the subgroup average, R tracks the spread inside each subgroup.',
+  },
+  'western electric': {
+    id: 'western-electric',
+    term: 'Western Electric rules',
+    plain:
+      'Extra alarm patterns on a control chart (runs, trends, points near the edge) — not only “outside the limit.”',
+  },
+  'gage rr': {
+    id: 'gage-rr',
+    term: 'Gage R&R',
+    plain:
+      'A study that splits measurement noise into repeatability (same person) and reproducibility (different people).',
+  },
+  repeatability: {
+    id: 'repeatability',
+    term: 'Repeatability',
+    plain:
+      'How much a measurement jumps when the same person measures the same part again with the same gage.',
+  },
+  reproducibility: {
+    id: 'reproducibility',
+    term: 'Reproducibility',
+    plain:
+      'How much measurements disagree between different people using the same gage.',
+  },
 }
 
 export function resolveTerms(ids: string[]): GlossaryTerm[] {
