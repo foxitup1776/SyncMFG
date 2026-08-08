@@ -5,6 +5,7 @@ export type AppView =
   | 'home'
   | 'data'
   | 'tools'
+  | 'projects'
   | 'settings'
   | 'visual'
   | 'imr'
@@ -16,10 +17,14 @@ export type AppView =
   | 'xbarr'
   | 'gage'
   | 'compare'
+  | 'fishbone'
+  | 'fivewhys'
+  | 'fmea'
 
 const NAV: { id: AppView; label: string }[] = [
   { id: 'home', label: 'Home' },
   { id: 'data', label: 'Data' },
+  { id: 'projects', label: 'Projects' },
   { id: 'tools', label: 'Tools' },
   { id: 'settings', label: 'Settings' },
 ]
@@ -35,6 +40,9 @@ const TOOL_VIEWS = new Set<AppView>([
   'xbarr',
   'gage',
   'compare',
+  'fishbone',
+  'fivewhys',
+  'fmea',
 ])
 
 export function AppShell({

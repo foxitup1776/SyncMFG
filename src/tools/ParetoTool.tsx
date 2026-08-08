@@ -143,7 +143,9 @@ export function ParetoTool() {
               </ResponsiveContainer>
             </div>
           </div>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport report={report} sourceTool="Pareto" defaultPhase="analyze" />
+          ) : null}
         </>
       ) : null}
     </div>

@@ -133,7 +133,9 @@ export function GageRrTool() {
               <strong>{fmt(result.sigmaReproducibility)}</strong>
             </div>
           </div>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport report={report} sourceTool="Gage R&R" defaultPhase="measure" />
+          ) : null}
         </>
       ) : datasetId ? (
         <p className="form-error">

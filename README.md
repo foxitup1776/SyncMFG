@@ -6,12 +6,19 @@ Private Lean Six Sigma workbench — paste Excel data, run analyses, email or pr
 
 ## Tools
 
+**Problem solving**
+- DMAIC project / A3 binder (pin stats evidence by phase)
+- Fishbone (6M), 5 Whys, FMEA (RPN)
+
+**Stats**
 - Data ingest + sample datasets (30-day local save)
 - Histogram / Box / Run, multi-column compare
 - I-MR with Western Electric rules, X̄-R
 - Process capability (Cp/Cpk/Pp/Ppk)
 - Pareto, 2-sample t-test, scatter/regression
 - Gage R&R (lite), time-study Monte Carlo
+
+**Share & setup**
 - Email, Print/PDF, optional Web3Forms send
 - Settings: extra passwords, session length, FoxHome CouchDB sync
 - Installable PWA (Add to Home Screen)

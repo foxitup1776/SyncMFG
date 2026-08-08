@@ -80,7 +80,9 @@ export function VisualTool() {
             <BoxPlotChart box={box} />
             <RunChart values={values} />
           </div>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport report={report} sourceTool="Visual" defaultPhase="measure" />
+          ) : null}
         </>
       ) : datasetId && column ? (
         <p className="form-error">Need at least 2 numeric values in that column.</p>

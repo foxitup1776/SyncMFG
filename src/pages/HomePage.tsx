@@ -7,13 +7,20 @@ export function HomePage({ onNavigate }: { onNavigate: (v: AppView) => void }) {
         <p className="eyebrow">Continuous improvement workbench</p>
         <h1>SYNCMFG</h1>
         <p className="hero-copy">
-          Paste Excel data, run Lean Six Sigma analyses, and email or print a
-          plain-English report — from home or any factory floor.
+          Solve problems with DMAIC tools and prove them with stats — then email
+          or print a plain-English A3-style report.
         </p>
         <div className="row actions">
           <button
             type="button"
             className="btn primary"
+            onClick={() => onNavigate('projects')}
+          >
+            Start a DMAIC project
+          </button>
+          <button
+            type="button"
+            className="btn secondary"
             onClick={() => onNavigate('data')}
           >
             Bring data in
@@ -23,29 +30,28 @@ export function HomePage({ onNavigate }: { onNavigate: (v: AppView) => void }) {
             className="btn secondary"
             onClick={() => onNavigate('tools')}
           >
-            Open tools
+            All tools
           </button>
         </div>
       </section>
 
       <section className="panel soft">
-        <h2>What you can do</h2>
+        <h2>Suggested flow</h2>
         <ol className="roadmap">
           <li>
-            <strong>Load data</strong> — paste, upload, or install sample
-            datasets.
+            <strong>Define</strong> — project charter + SIPOC in Projects.
           </li>
           <li>
-            <strong>Visualize & control</strong> — hist/box/run, I-MR with
-            Western Electric, X̄-R, compare columns.
+            <strong>Measure</strong> — paste data; pin I-MR / capability / Gage
+            reports.
           </li>
           <li>
-            <strong>Decide</strong> — capability, Pareto, t-test, regression,
-            Gage R&R, Monte Carlo.
+            <strong>Analyze</strong> — Fishbone → 5 Whys → FMEA; prove with
+            Pareto, t-test, regression.
           </li>
           <li>
-            <strong>Share</strong> — email, print/PDF, optional server send +
-            FoxHome CouchDB sync in Settings.
+            <strong>Improve & Control</strong> — countermeasures, Monte Carlo,
+            control plan.
           </li>
         </ol>
       </section>

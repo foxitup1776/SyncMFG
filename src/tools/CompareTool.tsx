@@ -117,7 +117,9 @@ export function CompareTool() {
               </div>
             ))}
           </div>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport report={report} sourceTool="Compare" defaultPhase="analyze" />
+          ) : null}
         </>
       ) : datasetId ? (
         <p className="form-error">Select at least two numeric columns.</p>

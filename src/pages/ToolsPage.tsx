@@ -5,105 +5,150 @@ const TOOLS: {
   name: string
   status: string
   blurb: string
+  group: string
 }[] = [
+  {
+    id: 'projects',
+    name: 'DMAIC project / A3',
+    status: 'Ready',
+    group: 'Problem solving',
+    blurb: 'Binder for charter, SIPOC, evidence, improve & control plans.',
+  },
+  {
+    id: 'fishbone',
+    name: 'Fishbone (Ishikawa)',
+    status: 'Ready',
+    group: 'Problem solving',
+    blurb: '6M cause brainstorm tied to a DMAIC project.',
+  },
+  {
+    id: 'fivewhys',
+    name: '5 Whys',
+    status: 'Ready',
+    group: 'Problem solving',
+    blurb: 'Drill from symptom to root cause; seed from Fishbone.',
+  },
+  {
+    id: 'fmea',
+    name: 'FMEA',
+    status: 'Ready',
+    group: 'Problem solving',
+    blurb: 'Score Severity × Occurrence × Detection; sort by RPN.',
+  },
   {
     id: 'data',
     name: 'Data ingest & summary',
     status: 'Ready',
-    blurb: 'Paste Excel / upload CSV·XLSX, sample datasets, 30-day save.',
+    group: 'Stats',
+    blurb: 'Paste Excel / upload / samples; 30-day save.',
   },
   {
     id: 'visual',
     name: 'Histogram / Box / Run',
     status: 'Ready',
-    blurb: 'Shape, outliers, and trends over entry order.',
+    group: 'Stats',
+    blurb: 'Shape, outliers, and trends.',
   },
   {
     id: 'compare',
     name: 'Multi-column compare',
     status: 'Ready',
-    blurb: 'Side-by-side box plots for shifts, suppliers, or lines.',
+    group: 'Stats',
+    blurb: 'Side-by-side box plots.',
   },
   {
     id: 'imr',
     name: 'I-MR + Western Electric',
     status: 'Ready',
-    blurb: 'Stability for one column, including run rules.',
+    group: 'Stats',
+    blurb: 'Stability + run rules.',
   },
   {
     id: 'xbarr',
     name: 'X̄-R control chart',
     status: 'Ready',
-    blurb: 'When Excel rows are already subgroups of 2–10.',
+    group: 'Stats',
+    blurb: 'Subgrouped Excel rows.',
   },
   {
     id: 'capability',
     name: 'Process capability',
     status: 'Ready',
-    blurb: 'Cp, Cpk, Pp, Ppk against customer specs.',
+    group: 'Stats',
+    blurb: 'Cp, Cpk, Pp, Ppk.',
   },
   {
     id: 'pareto',
     name: 'Pareto chart',
     status: 'Ready',
-    blurb: 'Vital-few ranking of defects or causes.',
+    group: 'Stats',
+    blurb: 'Vital-few ranking.',
   },
   {
     id: 'ttest',
     name: '2-sample t-test',
     status: 'Ready',
-    blurb: 'Did group A really differ from group B?',
+    group: 'Stats',
+    blurb: 'Did A differ from B?',
   },
   {
     id: 'regression',
     name: 'Scatter & regression',
     status: 'Ready',
-    blurb: 'Relationship + R² in plain English.',
+    group: 'Stats',
+    blurb: 'Relationship + R².',
   },
   {
     id: 'gage',
     name: 'Gage R&R (lite)',
     status: 'Ready',
-    blurb: 'Is the measurement system trustworthy?',
+    group: 'Stats',
+    blurb: 'Is the gage trustworthy?',
   },
   {
     id: 'montecarlo',
     name: 'Time-study Monte Carlo',
     status: 'Ready',
-    blurb: 'Step times → risk and likely total time.',
+    group: 'Stats',
+    blurb: 'Step times → risk.',
   },
 ]
 
 export function ToolsPage({ onNavigate }: { onNavigate: (v: AppView) => void }) {
+  const groups = ['Problem solving', 'Stats']
   return (
     <div className="tools-page">
       <section className="panel">
-        <h2>Analysis tools</h2>
+        <h2>Tools</h2>
         <p className="lede">
-          Each tool remembers your last dataset choices, ends with a
-          plain-English report, and lets you email, print/PDF, or sync later
-          from Settings.
+          Problem-solving tools live on a DMAIC project. Stats tools can pin
+          their reports into that same project.
         </p>
-        <ul className="tool-cards">
-          {TOOLS.map((t) => (
-            <li key={t.name}>
-              <div className="tool-head">
-                <h3>{t.name}</h3>
-                <span className={`status status-${t.status.toLowerCase()}`}>
-                  {t.status}
-                </span>
-              </div>
-              <p>{t.blurb}</p>
-              <button
-                type="button"
-                className="btn primary"
-                onClick={() => onNavigate(t.id)}
-              >
-                Open
-              </button>
-            </li>
-          ))}
-        </ul>
+        {groups.map((group) => (
+          <div key={group} className="tool-group">
+            <h3 className="subhead">{group}</h3>
+            <ul className="tool-cards">
+              {TOOLS.filter((t) => t.group === group).map((t) => (
+                <li key={t.name}>
+                  <div className="tool-head">
+                    <h3>{t.name}</h3>
+                    <span className={`status status-${t.status.toLowerCase()}`}>
+                      {t.status}
+                    </span>
+                  </div>
+                  <p>{t.blurb}</p>
+                  <button
+                    type="button"
+                    className="btn primary"
+                    onClick={() => onNavigate(t.id)}
+                  >
+                    Open
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </section>
     </div>
   )

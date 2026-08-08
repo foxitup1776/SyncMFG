@@ -146,7 +146,13 @@ export function CapabilityTool() {
               <strong>{fmt(result.ppk)}</strong>
             </div>
           </div>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport
+              report={report}
+              sourceTool="Capability"
+              defaultPhase="measure"
+            />
+          ) : null}
         </>
       ) : datasetId && column ? (
         <p className="form-error">Need at least 2 numeric values.</p>

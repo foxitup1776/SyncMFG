@@ -232,7 +232,13 @@ export function MonteCarloTool() {
               ))}
             </ul>
           </section>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport
+              report={report}
+              sourceTool="Monte Carlo"
+              defaultPhase="improve"
+            />
+          ) : null}
         </>
       ) : (
         <p className="form-error">

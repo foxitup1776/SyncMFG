@@ -4,11 +4,16 @@ import { AppShell, type AppView } from './components/AppShell'
 import { LoginGate } from './components/LoginGate'
 import { DataPage } from './pages/DataPage'
 import { HomePage } from './pages/HomePage'
+import { ProjectsPage } from './pages/ProjectsPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { ToolsPage } from './pages/ToolsPage'
 import { purgeExpiredDatasets } from './storage/datasets'
+import { purgeExpiredProjects } from './storage/projects'
 import { CapabilityTool } from './tools/CapabilityTool'
 import { CompareTool } from './tools/CompareTool'
+import { FishboneTool } from './tools/FishboneTool'
+import { FiveWhysTool } from './tools/FiveWhysTool'
+import { FmeaTool } from './tools/FmeaTool'
 import { GageRrTool } from './tools/GageRrTool'
 import { ImrTool } from './tools/ImrTool'
 import { MonteCarloTool } from './tools/MonteCarloTool'
@@ -41,6 +46,7 @@ export default function App() {
 
   useEffect(() => {
     purgeExpiredDatasets()
+    purgeExpiredProjects()
   }, [])
 
   useEffect(() => {
@@ -71,6 +77,7 @@ export default function App() {
     <AppShell view={view} onNavigate={setView}>
       {view === 'home' ? <HomePage onNavigate={setView} /> : null}
       {view === 'data' ? <DataPage /> : null}
+      {view === 'projects' ? <ProjectsPage onNavigate={setView} /> : null}
       {view === 'tools' ? <ToolsPage onNavigate={setView} /> : null}
       {view === 'settings' ? <SettingsPage /> : null}
       {view === 'visual' ? (
@@ -121,6 +128,21 @@ export default function App() {
       {view === 'compare' ? (
         <ToolFrame onBack={() => setView('tools')}>
           <CompareTool />
+        </ToolFrame>
+      ) : null}
+      {view === 'fishbone' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <FishboneTool />
+        </ToolFrame>
+      ) : null}
+      {view === 'fivewhys' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <FiveWhysTool />
+        </ToolFrame>
+      ) : null}
+      {view === 'fmea' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <FmeaTool />
         </ToolFrame>
       ) : null}
     </AppShell>

@@ -146,7 +146,13 @@ export function RegressionTool() {
               <strong>{fmt(result.r2)}</strong>
             </div>
           </div>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport
+              report={report}
+              sourceTool="Regression"
+              defaultPhase="analyze"
+            />
+          ) : null}
         </>
       ) : null}
     </div>

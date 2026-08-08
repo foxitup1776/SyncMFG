@@ -104,7 +104,9 @@ export function TTestTool() {
               <strong>{fmt(result.pValue, 4)}</strong>
             </div>
           </div>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport report={report} sourceTool="t-test" defaultPhase="analyze" />
+          ) : null}
         </>
       ) : null}
     </div>

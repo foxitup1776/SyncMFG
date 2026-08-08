@@ -1,13 +1,20 @@
 import type { AnalysisReport } from '../data/types'
+import type { DmaicPhase } from '../projects/types'
+import { AttachToProject } from './AttachToProject'
 import { Glossary } from './Glossary'
 import { ShareReport } from './ShareReport'
 
 export function PlainReport({
   report,
   share = true,
+  sourceTool,
+  defaultPhase = 'analyze',
 }: {
   report: AnalysisReport
   share?: boolean
+  /** When set, shows “Pin to DMAIC project”. */
+  sourceTool?: string
+  defaultPhase?: DmaicPhase
 }) {
   return (
     <>
@@ -21,6 +28,13 @@ export function PlainReport({
         </ul>
         <Glossary termsUsed={report.termsUsed} />
       </section>
+      {sourceTool ? (
+        <AttachToProject
+          report={report}
+          sourceTool={sourceTool}
+          defaultPhase={defaultPhase}
+        />
+      ) : null}
       {share ? <ShareReport report={report} /> : null}
     </>
   )

@@ -210,6 +210,66 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
     plain:
       'How much measurements disagree between different people using the same gage.',
   },
+  fishbone: {
+    id: 'fishbone',
+    term: 'Fishbone (Ishikawa)',
+    plain:
+      'A cause-and-effect diagram. The “head” is the problem; the “bones” are categories of possible causes.',
+  },
+  '6m': {
+    id: 'six-m',
+    term: '6M',
+    plain:
+      'Common fishbone categories: Man (people), Machine, Material, Method, Measurement, and Environment (Mother Nature).',
+  },
+  'root cause': {
+    id: 'root-cause',
+    term: 'Root cause',
+    plain:
+      'The deeper reason a problem keeps happening — something you can change to stop the symptom from returning.',
+  },
+  '5 whys': {
+    id: 'five-whys',
+    term: '5 Whys',
+    plain:
+      'Ask “why?” repeatedly (often five times) to move from a surface symptom to a fixable root cause.',
+  },
+  fmea: {
+    id: 'fmea',
+    term: 'FMEA',
+    plain:
+      'Failure Mode and Effects Analysis — list how something can fail, score the risk, and prioritize fixes.',
+  },
+  rpn: {
+    id: 'rpn',
+    term: 'RPN',
+    plain:
+      'Risk Priority Number = Severity × Occurrence × Detection (each usually 1–10). Higher means fix sooner.',
+  },
+  dmaic: {
+    id: 'dmaic',
+    term: 'DMAIC',
+    plain:
+      'Define, Measure, Analyze, Improve, Control — the main Six Sigma project roadmap for fixing an existing process.',
+  },
+  a3: {
+    id: 'a3',
+    term: 'A3',
+    plain:
+      'A one-page story of a problem: background, analysis, countermeasures, and follow-up — named after A3 paper size.',
+  },
+  ctq: {
+    id: 'ctq',
+    term: 'CTQ',
+    plain:
+      'Critical to Quality — the specific measurable thing the customer cares about (the metric your project aims to move).',
+  },
+  sipoc: {
+    id: 'sipoc',
+    term: 'SIPOC',
+    plain:
+      'Suppliers, Inputs, Process, Outputs, Customers — a high-level map of who and what surrounds your process.',
+  },
 }
 
 export function resolveTerms(ids: string[]): GlossaryTerm[] {

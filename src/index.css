@@ -674,6 +674,95 @@ select {
   color: var(--accent);
 }
 
+.attach-panel {
+  background: var(--bg-elevated);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.15rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow);
+}
+
+.attach-panel h3,
+.attach-hint {
+  margin-top: 0;
+}
+
+.phase-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.85rem 0 0.5rem;
+}
+
+.phase-tab {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--ink-soft);
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.phase-tab.active {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #f3f7f7;
+}
+
+.fish-bones {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.fish-head {
+  margin-bottom: 1rem;
+}
+
+.bone-row {
+  margin-bottom: 0.45rem;
+}
+
+.bone-row input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.fmea-table input[type='number'] {
+  width: 3.2rem;
+}
+
+.evidence-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.evidence-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.evidence-summary {
+  color: var(--ink-soft);
+  margin: 0.35rem 0 0;
+  font-size: 0.95rem;
+}
+
+.analyze-snapshot {
+  margin-top: 1rem;
+  color: var(--ink-soft);
+}
+
+.tool-group {
+  margin-top: 1.25rem;
+}
+
 @media print {
   body {
     background: #fff !important;
@@ -682,7 +771,8 @@ select {
   .no-print,
   .topbar,
   .back-link,
-  .share-report {
+  .share-report,
+  .attach-panel {
     display: none !important;
   }
 

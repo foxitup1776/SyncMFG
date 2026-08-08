@@ -263,7 +263,11 @@ export function DataIngest() {
             </div>
           </section>
 
-          <PlainReport report={report} />
+          <PlainReport
+            report={report}
+            sourceTool="Data summary"
+            defaultPhase="measure"
+          />
         </>
       ) : null}
     </div>

@@ -112,7 +112,9 @@ export function ImrTool() {
               outIndexes={imr.outOfControlMr}
             />
           </div>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport report={report} sourceTool="I-MR" defaultPhase="measure" />
+          ) : null}
         </>
       ) : datasetId && column ? (
         <p className="form-error">Need at least 2 numeric values for an I-MR chart.</p>

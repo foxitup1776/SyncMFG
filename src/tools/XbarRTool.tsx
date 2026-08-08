@@ -88,7 +88,9 @@ export function XbarRTool() {
               outIndexes={result.outR}
             />
           </div>
-          {report ? <PlainReport report={report} /> : null}
+          {report ? (
+            <PlainReport report={report} sourceTool="Xbar-R" defaultPhase="measure" />
+          ) : null}
         </>
       ) : datasetId ? (
         <p className="form-error">
