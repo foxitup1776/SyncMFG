@@ -6,6 +6,7 @@ import { DataPage } from './pages/DataPage'
 import { HomePage } from './pages/HomePage'
 import { ProjectsPage } from './pages/ProjectsPage'
 import { SettingsPage } from './pages/SettingsPage'
+import { SolvePage } from './pages/SolvePage'
 import { ToolsPage } from './pages/ToolsPage'
 import { purgeExpiredDatasets } from './storage/datasets'
 import { purgeExpiredProjects } from './storage/projects'
@@ -76,6 +77,7 @@ export default function App() {
   return (
     <AppShell view={view} onNavigate={setView}>
       {view === 'home' ? <HomePage onNavigate={setView} /> : null}
+      {view === 'solve' ? <SolvePage onNavigate={setView} /> : null}
       {view === 'data' ? <DataPage /> : null}
       {view === 'projects' ? <ProjectsPage onNavigate={setView} /> : null}
       {view === 'tools' ? <ToolsPage onNavigate={setView} /> : null}

@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
 import { DEFAULT_BONES, type FishboneState } from '../projects/types'
 import {
@@ -80,11 +81,12 @@ export function FishboneTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="fishbone" />
       <section className="panel">
-        <h2>Fishbone (Ishikawa)</h2>
+        <h2>Brainstorm possible causes</h2>
         <p className="lede">
-          Brainstorm why a problem happens — People, Machine, Material, Method,
-          Measurement, Environment — then prove the vital few with stats.
+          Map ideas under People, Machine, Material, Method, Measurement, and
+          Environment — then prove the vital few with stats.
         </p>
         <label htmlFor="fb-project">DMAIC project</label>
         <select

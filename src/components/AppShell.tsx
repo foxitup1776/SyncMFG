@@ -3,6 +3,7 @@ import { setAuthenticated } from '../auth/session'
 
 export type AppView =
   | 'home'
+  | 'solve'
   | 'data'
   | 'tools'
   | 'projects'
@@ -23,6 +24,7 @@ export type AppView =
 
 const NAV: { id: AppView; label: string }[] = [
   { id: 'home', label: 'Home' },
+  { id: 'solve', label: 'Solve' },
   { id: 'data', label: 'Data' },
   { id: 'projects', label: 'Projects' },
   { id: 'tools', label: 'Tools' },

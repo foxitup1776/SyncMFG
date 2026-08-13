@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { DistributionChart } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
@@ -74,8 +75,9 @@ export function MonteCarloTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="montecarlo" />
       <section className="panel">
-        <h2>Time-study Monte Carlo</h2>
+        <h2>What total time should we expect?</h2>
         <p className="lede">
           List process steps with a fast, typical, and slow time. We run
           thousands of “what if” days and show the likely total time and risk of

@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { DatasetPicker } from '../components/DatasetPicker'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { ControlChart } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
@@ -74,11 +75,12 @@ export function ImrTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="imr" />
       <section className="panel">
-        <h2>I-MR control chart</h2>
+        <h2>Is this process stable?</h2>
         <p className="lede">
-          Stability check for one measurement column, including Western Electric
-          run rules (not only points outside limits).
+          Stability check for one measurement column, including run-rule alarms
+          (not only points outside limits).
         </p>
         <DatasetPicker
           datasetId={datasetId}

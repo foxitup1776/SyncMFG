@@ -4,9 +4,16 @@ Private Lean Six Sigma workbench — paste Excel data, run analyses, email or pr
 
 **Live site:** https://foxitup1776.github.io/SyncMFG/
 
+## How to use it
+
+1. **Solve** — write the problem, tap situations that fit, get suggested tools  
+2. Open a tool — each one starts with *what problem / what it does / how to use it*  
+3. Pin reports into a **DMAIC project** to keep the story together  
+
 ## Tools
 
 **Problem solving**
+- Solve form with tool suggestions
 - DMAIC project / A3 binder (pin stats evidence by phase)
 - Fishbone (6M), 5 Whys, FMEA (RPN)
 

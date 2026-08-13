@@ -10,6 +10,7 @@ import {
   YAxis,
 } from 'recharts'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset, listDatasets } from '../storage/datasets'
@@ -62,8 +63,9 @@ export function ParetoTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="pareto" />
       <section className="panel">
-        <h2>Pareto chart</h2>
+        <h2>What are the biggest few problems?</h2>
         <p className="lede">
           Find the vital few defects or delays. Use a category column, and
           optionally a count column.

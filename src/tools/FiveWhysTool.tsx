@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
 import type { FiveWhysState } from '../projects/types'
 import {
@@ -77,11 +78,11 @@ export function FiveWhysTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="fivewhys" />
       <section className="panel">
-        <h2>5 Whys</h2>
+        <h2>Dig to a root cause</h2>
         <p className="lede">
-          Dig from a symptom to a root cause. Best after a Pareto bar or Fishbone
-          branch looks suspicious.
+          Best after a Pareto bar or Fishbone branch looks suspicious.
         </p>
         <label htmlFor="fw-project">DMAIC project</label>
         <select

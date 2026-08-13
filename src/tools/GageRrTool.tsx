@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset, listDatasets } from '../storage/datasets'
@@ -50,11 +51,12 @@ export function GageRrTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="gage" />
       <section className="panel">
-        <h2>Gage R&R (lite)</h2>
+        <h2>Can we trust the measurement?</h2>
         <p className="lede">
           Need columns for Part, Operator, and Measurement (repeat rows for
-          repeats). Asks: is the gage trustworthy?
+          repeats).
         </p>
         <div className="field-grid">
           <div>

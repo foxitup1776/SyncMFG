@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { BoxPlotChart } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
@@ -68,8 +69,9 @@ export function CompareTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="compare" />
       <section className="panel">
-        <h2>Multi-column compare</h2>
+        <h2>Compare groups side by side</h2>
         <p className="lede">
           Pick two or more numeric columns (shifts, suppliers, lines) and compare
           their box plots.

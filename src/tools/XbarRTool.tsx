@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { ControlChart } from '../components/charts/StatCharts'
 import type { AnalysisReport, CellValue } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
@@ -45,8 +46,9 @@ export function XbarRTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="xbarr" />
       <section className="panel">
-        <h2>X̄-R control chart</h2>
+        <h2>Are my subgroups stable?</h2>
         <p className="lede">
           For data already in subgroups: each row = one sample group, columns =
           the pieces in that group (size 2–10).

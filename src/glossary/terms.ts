@@ -118,13 +118,13 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
     id: 'r-squared',
     term: 'R-squared (R²)',
     plain:
-      'How much of the change in your result is explained by the inputs you modeled. Closer to 1 means the model tracks the data tightly; closer to 0 means it barely helps.',
+      'Imagine guessing the result using only the average. R-squared asks: how much better do we guess when we also use the input? 0 = no help; 1 = the input explains all the up-and-down.',
   },
   'p-value': {
     id: 'p-value',
     term: 'P-value',
     plain:
-      'The chance you’d see a difference this big (or bigger) if nothing real changed. In Six Sigma work, below 0.05 is often treated as “likely real, not just luck.”',
+      'If nothing real changed, what’s the chance you’d still see a gap this big by luck? Small p (under 0.05) means “probably real.” Big p means “could still be noise.”',
   },
   'monte carlo': {
     id: 'monte-carlo',
@@ -158,27 +158,27 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
   },
   '2-sample t-test': {
     id: 'two-sample-t',
-    term: '2-sample t-test',
+    term: 'Are two groups really different? (t-test)',
     plain:
-      'A check for whether two groups’ averages differ by more than random noise would usually allow.',
+      'Compares two averages and asks: is this gap bigger than normal luck would usually create? Everyday name first; “t-test” is the textbook name.',
   },
   correlation: {
     id: 'correlation',
-    term: 'Correlation (r)',
+    term: 'Do they move together? (correlation)',
     plain:
-      'How tightly two measurements move together, from −1 (opposite) through 0 (no line) to +1 (same direction).',
+      'From −1 (opposite directions) through 0 (no clear line) to +1 (same direction). Tight clustering means a stronger link.',
   },
   regression: {
     id: 'regression',
-    term: 'Regression',
+    term: 'Does X help explain Y? (regression)',
     plain:
-      'Fitting a line (or curve) so you can describe and predict one measurement from another.',
+      'Draws the best straight line through your points so you can describe the pattern and make a rough prediction.',
   },
   slope: {
     id: 'slope',
     term: 'Slope',
     plain:
-      'How much Y changes when X goes up by one unit on the best-fit line.',
+      'On the best-fit line: when the input goes up by 1, how much does the result move?',
   },
   'xbar-r': {
     id: 'xbar-r',

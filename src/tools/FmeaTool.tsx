@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
 import type { FmeaRow } from '../projects/types'
 import {
@@ -77,11 +78,12 @@ export function FmeaTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="fmea" />
       <section className="panel">
-        <h2>FMEA</h2>
+        <h2>Rank failure risks before they hurt us</h2>
         <p className="lede">
-          Failure Mode and Effects Analysis — brainstorm what can go wrong, score
-          Severity × Occurrence × Detection (1–10), fix high RPN first.
+          Brainstorm what can go wrong, score Severity × Occurrence × Detection
+          (1–10), fix high RPN first.
         </p>
         <label htmlFor="fmea-project">DMAIC project</label>
         <select

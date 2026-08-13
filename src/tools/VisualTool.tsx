@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { DatasetPicker } from '../components/DatasetPicker'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import {
   BoxPlotChart,
   HistogramChart,
@@ -57,8 +58,9 @@ export function VisualTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="visual" />
       <section className="panel">
-        <h2>Histogram, box plot & run chart</h2>
+        <h2>See the shape of my data</h2>
         <p className="lede">
           First look at one measurement column — shape, middle, outliers, and
           order.

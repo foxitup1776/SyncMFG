@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { DatasetPicker } from '../components/DatasetPicker'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { BoxPlotChart } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
@@ -26,17 +27,17 @@ export function TTestTool() {
     if (!result || !dataset) return null
     const significant = result.pValue < 0.05
     return {
-      title: `2-sample t-test — ${colA} vs ${colB}`,
+      title: `Are these two groups really different? — ${colA} vs ${colB}`,
       summary: significant
-        ? `The difference between “${colA}” and “${colB}” looks real (not just luck). p-value = ${fmt(result.pValue, 4)}.`
-        : `We do not have strong evidence that “${colA}” and “${colB}” truly differ. p-value = ${fmt(result.pValue, 4)} (above the usual 0.05 cut).`,
+        ? `“${colA}” and “${colB}” look truly different — not just lucky noise. Chance of seeing a gap this big if nothing real changed: ${fmt(result.pValue, 4)} (under the usual 0.05 cut).`
+        : `We do not yet have strong proof that “${colA}” and “${colB}” truly differ. Chance this gap is just luck: ${fmt(result.pValue, 4)} (above 0.05).`,
       bullets: [
-        `Average ${colA} = ${fmt(result.mean1)} (n=${result.n1}). Average ${colB} = ${fmt(result.mean2)} (n=${result.n2}).`,
-        `Difference (A − B) = ${fmt(result.meanDiff)}.`,
-        `t = ${fmt(result.t, 3)}, degrees of freedom ≈ ${fmt(result.df, 1)}.`,
+        `Average ${colA} = ${fmt(result.mean1)} (${result.n1} values). Average ${colB} = ${fmt(result.mean2)} (${result.n2} values).`,
+        `Gap (A minus B) = ${fmt(result.meanDiff)}.`,
+        `The math score behind this (t-statistic) is ${fmt(result.t, 3)}.`,
         significant
-          ? 'In Six Sigma work, p < 0.05 usually means “act like this difference is real.”'
-          : 'The averages may look different, but the spread and sample size say it could still be noise.',
+          ? 'Plain takeaway: treat this as a real difference and dig into why.'
+          : 'Plain takeaway: the gap might still be noise — collect more data or look for a bigger difference.',
       ],
       termsUsed: ['p-value', 'mean', 'standard deviation', '2-sample t-test'],
     }
@@ -44,11 +45,12 @@ export function TTestTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="ttest" />
       <section className="panel">
-        <h2>2-sample t-test</h2>
+        <h2>Are these two groups really different?</h2>
         <p className="lede">
-          Compare two numeric columns (e.g. Oven A vs Oven B) and ask if the
-          difference is real.
+          Pick two columns (Oven A vs Oven B, Shift 1 vs Shift 2). We’ll tell you
+          if the gap looks real or like luck.
         </p>
         <DatasetPicker
           datasetId={datasetId}

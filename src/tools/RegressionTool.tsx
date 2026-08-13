@@ -10,6 +10,7 @@ import {
   YAxis,
 } from 'recharts'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset, listDatasets } from '../storage/datasets'
@@ -38,13 +39,13 @@ export function RegressionTool() {
           ? 'moderate'
           : 'weak'
     return {
-      title: `Regression — ${yCol} vs ${xCol}`,
-      summary: `There is a ${strength} linear link between “${xCol}” and “${yCol}”. R² = ${fmt(result.r2, 3)} means about ${fmt(result.r2 * 100, 1)}% of the change in ${yCol} is explained by ${xCol}.`,
+      title: `Does this input move with that result? — ${xCol} → ${yCol}`,
+      summary: `There is a ${strength} straight-line link between “${xCol}” and “${yCol}”. About ${fmt(result.r2 * 100, 1)}% of the up-and-down in ${yCol} is explained by ${xCol} (R-squared = ${fmt(result.r2, 3)}).`,
       bullets: [
-        `Best-fit line: ${yCol} ≈ ${fmt(result.intercept)} + ${fmt(result.slope)} × ${xCol}.`,
-        `Correlation r = ${fmt(result.r, 3)} (${result.r >= 0 ? 'positive' : 'negative'} direction).`,
+        `Rule of thumb from the line: ${yCol} ≈ ${fmt(result.intercept)} + ${fmt(result.slope)} × ${xCol}.`,
+        `They move ${result.r >= 0 ? 'in the same direction' : 'in opposite directions'} (correlation ${fmt(result.r, 3)}).`,
         `Based on ${result.n} paired rows from “${dataset.name}”.`,
-        'A strong fit does not prove that X causes Y — only that they move together in this data.',
+        'Important: moving together is not automatic proof that X causes Y.',
       ],
       termsUsed: ['r-squared', 'correlation', 'regression', 'slope'],
     }
@@ -52,11 +53,12 @@ export function RegressionTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="regression" />
       <section className="panel">
-        <h2>Scatter & simple regression</h2>
+        <h2>Does this input move with that result?</h2>
         <p className="lede">
-          See if two measurements move together, and how well a straight line
-          explains the pattern.
+          Pick an input and a result. We’ll show the scatter, a best-fit line, and
+          how much of the result the input explains.
         </p>
         <div className="field-grid">
           <div>

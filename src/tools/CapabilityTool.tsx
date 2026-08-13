@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { DatasetPicker } from '../components/DatasetPicker'
 import { PlainReport } from '../components/PlainReport'
+import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { HistogramChart } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
@@ -87,8 +88,9 @@ export function CapabilityTool() {
 
   return (
     <div className="tool-view">
+      <ToolGuidePanel toolId="capability" />
       <section className="panel">
-        <h2>Process capability</h2>
+        <h2>Can we hit the customer limits?</h2>
         <p className="lede">
           After the process looks stable, ask: can it hit the customer’s allowed
           range?

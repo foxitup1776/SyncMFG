@@ -9,6 +9,7 @@ import {
   listDatasets,
   saveDataset,
 } from '../storage/datasets'
+import { ToolGuidePanel } from './ToolGuidePanel'
 import { PlainReport } from './PlainReport'
 
 function fmt(n: number | null): string {
@@ -103,8 +104,9 @@ export function DataIngest() {
 
   return (
     <div className="data-ingest">
+      <ToolGuidePanel toolId="data" />
       <section className="panel">
-        <h2>Bring data in</h2>
+        <h2>Bring numbers in</h2>
         <p className="lede">
           Copy a range from Excel and paste it below, or upload a CSV / Excel
           file. Math runs in this browser so it works on any factory Wi‑Fi.
