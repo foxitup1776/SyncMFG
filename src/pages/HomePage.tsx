@@ -7,8 +7,9 @@ export function HomePage({ onNavigate }: { onNavigate: (v: AppView) => void }) {
         <p className="eyebrow">Continuous improvement workbench</p>
         <h1>SYNCMFG</h1>
         <p className="hero-copy">
-          Start with the problem in plain language. We’ll suggest tools that fit —
-          then walk you through what each one does and how to use it.
+          Lean and Six Sigma on the floor — without needing Minitab or advanced
+          math. Operators and CI leads: pick a situation (scrap, red flag,
+          changeover, yield, OEE…) and follow the walkthrough.
         </p>
         <div className="row actions">
           <button
@@ -21,16 +22,16 @@ export function HomePage({ onNavigate }: { onNavigate: (v: AppView) => void }) {
           <button
             type="button"
             className="btn secondary"
-            onClick={() => onNavigate('data')}
+            onClick={() => onNavigate('tools')}
           >
-            Bring data in
+            Choose a method
           </button>
           <button
             type="button"
             className="btn secondary"
-            onClick={() => onNavigate('tools')}
+            onClick={() => onNavigate('data')}
           >
-            Browse tools
+            Bring data in
           </button>
         </div>
       </section>
@@ -40,19 +41,20 @@ export function HomePage({ onNavigate }: { onNavigate: (v: AppView) => void }) {
         <ol className="roadmap">
           <li>
             <strong>What is the problem?</strong> Write it and tap situations that
-            fit (Solve).
+            fit (Solve) — or open Methods and pick a visual pathway.
           </li>
           <li>
-            <strong>Which tools help?</strong> See suggestions as everyday
-            questions, not jargon first.
+            <strong>Which method?</strong> Hypothesis testing, predictive (R²),
+            stability, capability, vital few — each with quotes from your teaching
+            notes and a floor example.
           </li>
           <li>
-            <strong>How do I use the tool?</strong> Each tool opens with a short
-            guide, then the working screen.
+            <strong>How do I run it?</strong> Step-by-step into the calculator,
+            plain-English report, pin into a DMAIC project.
           </li>
           <li>
-            <strong>Keep the story together</strong> in a DMAIC project and pin
-            proof along the way.
+            <strong>Keep the story together</strong> so the plant sees proof, not
+            just a chart dump.
           </li>
         </ol>
       </section>

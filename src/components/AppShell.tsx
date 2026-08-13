@@ -14,6 +14,7 @@ export type AppView =
   | 'montecarlo'
   | 'pareto'
   | 'ttest'
+  | 'anova'
   | 'regression'
   | 'xbarr'
   | 'gage'
@@ -21,13 +22,16 @@ export type AppView =
   | 'fishbone'
   | 'fivewhys'
   | 'fmea'
+  | 'yield'
+  | 'oee'
+  | 'beforeafter'
 
 const NAV: { id: AppView; label: string }[] = [
   { id: 'home', label: 'Home' },
   { id: 'solve', label: 'Solve' },
   { id: 'data', label: 'Data' },
   { id: 'projects', label: 'Projects' },
-  { id: 'tools', label: 'Tools' },
+  { id: 'tools', label: 'Methods' },
   { id: 'settings', label: 'Settings' },
 ]
 
@@ -38,6 +42,7 @@ const TOOL_VIEWS = new Set<AppView>([
   'montecarlo',
   'pareto',
   'ttest',
+  'anova',
   'regression',
   'xbarr',
   'gage',
@@ -45,6 +50,9 @@ const TOOL_VIEWS = new Set<AppView>([
   'fishbone',
   'fivewhys',
   'fmea',
+  'yield',
+  'oee',
+  'beforeafter',
 ])
 
 export function AppShell({

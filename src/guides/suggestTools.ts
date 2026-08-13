@@ -48,6 +48,28 @@ export function suggestTools(
         }
       }
     }
+    if (
+      /\b(three|3|four|4|five|5)\b/.test(text) &&
+      /\b(shift|oven|supplier|line|group|groups)\b/.test(text)
+    ) {
+      bump('anova', 5, 'You mentioned several groups — try ANOVA')
+    }
+    if (/\b(r2|r²|r-squared|predict|regression)\b/.test(text)) {
+      bump('regression', 5, 'Sounds like predictive analytics / R²')
+    }
+    if (/\b(oee|downtime|small stop|slow cycle|bottleneck)\b/.test(text)) {
+      bump('oee', 5, 'Sounds like line effectiveness / OEE')
+    }
+    if (/\b(yield|fpy|first.?pass|startup scrap)\b/.test(text)) {
+      bump('yield', 5, 'Sounds like first-pass yield / scrap')
+    }
+    if (/\b(before|after|did (it|the fix) work|kaizen)\b/.test(text)) {
+      bump('beforeafter', 5, 'Sounds like a before/after proof check')
+    }
+    if (/\b(changeover|smed|make.?ready|setup time)\b/.test(text)) {
+      bump('montecarlo', 4, 'Changeover time risk')
+      bump('yield', 3, 'Watch startup scrap after changeover')
+    }
   }
 
   // Sensible default starter pack if nothing matched

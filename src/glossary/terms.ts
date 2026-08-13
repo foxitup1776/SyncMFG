@@ -162,6 +162,12 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
     plain:
       'Compares two averages and asks: is this gap bigger than normal luck would usually create? Everyday name first; “t-test” is the textbook name.',
   },
+  anova: {
+    id: 'anova',
+    term: 'Is at least one group different? (ANOVA)',
+    plain:
+      'Compares three or more group averages at once. If the p-value is small, at least one group stands out from the pack — then dig into which one with plots or a focused two-group check.',
+  },
   correlation: {
     id: 'correlation',
     term: 'Do they move together? (correlation)',
@@ -269,6 +275,30 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
     term: 'SIPOC',
     plain:
       'Suppliers, Inputs, Process, Outputs, Customers — a high-level map of who and what surrounds your process.',
+  },
+  'first-pass yield': {
+    id: 'first-pass-yield',
+    term: 'First-pass yield (FPY)',
+    plain:
+      'Percent of pieces that are good the first time — scrap and rework both count against you. Same idea OEE uses for the quality rate.',
+  },
+  oee: {
+    id: 'oee',
+    term: 'OEE',
+    plain:
+      'Overall Equipment Effectiveness = Availability × Performance × Quality. Shows whether losses are mostly downtime, slow running, or bad pieces.',
+  },
+  'six big losses': {
+    id: 'six-big-losses',
+    term: 'Six Big Losses',
+    plain:
+      'A breakdown of why OEE suffers: equipment failure, setup/changeover, small stops, slow cycles, process defects, and startup (reduced) yield.',
+  },
+  kaizen: {
+    id: 'kaizen',
+    term: 'Kaizen',
+    plain:
+      'Continuous small improvements by everyone on the floor — not only big projects. Prove each change with before/after data.',
   },
 }
 

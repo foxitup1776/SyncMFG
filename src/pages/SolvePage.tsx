@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { AppView } from '../components/AppShell'
+import { pathwaysForSituations } from '../guides/pathways'
 import { suggestTools } from '../guides/suggestTools'
 import { SITUATIONS } from '../guides/toolGuides'
 import { usePersistedState } from '../hooks/usePersistedState'
@@ -22,6 +23,11 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
   const suggestions = useMemo(
     () => suggestTools(problem, situations),
     [problem, situations],
+  )
+
+  const pathwayHits = useMemo(
+    () => pathwaysForSituations(situations).slice(0, 4),
+    [situations],
   )
 
   function toggleSituation(id: string) {
@@ -65,7 +71,7 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
         <h2>What problem are you solving?</h2>
         <p className="lede">
           Write it in plain language, tap what sounds closest, and we’ll suggest
-          tools — explained as questions first, jargon second.
+          methods and tools — explained as questions first, jargon second.
         </p>
 
         <label htmlFor="problem-statement">Problem statement</label>
@@ -118,11 +124,44 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
             className="btn secondary"
             onClick={() => onNavigate('tools')}
           >
-            Browse all tools
+            Choose a method visually
           </button>
         </div>
         {note ? <p className="share-note">{note}</p> : null}
       </section>
+
+      {pathwayHits.length > 0 ? (
+        <section className="panel soft">
+          <h2>Suggested methods</h2>
+          <p className="lede">
+            Visual pathways with teaching-note quotes and step-by-step tools.
+          </p>
+          <div className="pathway-grid compact">
+            {pathwayHits.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                className="pathway-tile"
+                onClick={() => {
+                  try {
+                    localStorage.setItem(
+                      'pathways.selected',
+                      JSON.stringify(p.id),
+                    )
+                  } catch {
+                    /* ignore */
+                  }
+                  onNavigate('tools')
+                }}
+              >
+                <span className="pathway-short">{p.shortLabel}</span>
+                <strong>{p.title}</strong>
+                <span className="pathway-sub">{p.subtitle}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
       <section className="panel soft">
         <h2>Suggested next tools</h2>

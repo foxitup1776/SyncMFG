@@ -10,6 +10,8 @@ import { SolvePage } from './pages/SolvePage'
 import { ToolsPage } from './pages/ToolsPage'
 import { purgeExpiredDatasets } from './storage/datasets'
 import { purgeExpiredProjects } from './storage/projects'
+import { AnovaTool } from './tools/AnovaTool'
+import { BeforeAfterTool } from './tools/BeforeAfterTool'
 import { CapabilityTool } from './tools/CapabilityTool'
 import { CompareTool } from './tools/CompareTool'
 import { FishboneTool } from './tools/FishboneTool'
@@ -18,11 +20,13 @@ import { FmeaTool } from './tools/FmeaTool'
 import { GageRrTool } from './tools/GageRrTool'
 import { ImrTool } from './tools/ImrTool'
 import { MonteCarloTool } from './tools/MonteCarloTool'
+import { OeeTool } from './tools/OeeTool'
 import { ParetoTool } from './tools/ParetoTool'
 import { RegressionTool } from './tools/RegressionTool'
 import { TTestTool } from './tools/TTestTool'
 import { VisualTool } from './tools/VisualTool'
 import { XbarRTool } from './tools/XbarRTool'
+import { YieldTool } from './tools/YieldTool'
 
 function ToolFrame({
   onBack,
@@ -34,7 +38,7 @@ function ToolFrame({
   return (
     <div>
       <button type="button" className="btn ghost back-link no-print" onClick={onBack}>
-        ← All tools
+        ← Methods
       </button>
       {children}
     </div>
@@ -112,6 +116,11 @@ export default function App() {
           <TTestTool />
         </ToolFrame>
       ) : null}
+      {view === 'anova' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <AnovaTool />
+        </ToolFrame>
+      ) : null}
       {view === 'regression' ? (
         <ToolFrame onBack={() => setView('tools')}>
           <RegressionTool />
@@ -145,6 +154,21 @@ export default function App() {
       {view === 'fmea' ? (
         <ToolFrame onBack={() => setView('tools')}>
           <FmeaTool />
+        </ToolFrame>
+      ) : null}
+      {view === 'yield' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <YieldTool />
+        </ToolFrame>
+      ) : null}
+      {view === 'oee' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <OeeTool />
+        </ToolFrame>
+      ) : null}
+      {view === 'beforeafter' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <BeforeAfterTool />
         </ToolFrame>
       ) : null}
     </AppShell>

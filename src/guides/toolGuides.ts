@@ -1,5 +1,10 @@
 import type { AppView } from '../components/AppShell'
 
+export interface ToolGuideQuote {
+  text: string
+  source: string
+}
+
 export interface ToolGuide {
   id: AppView
   /** Everyday name shown first */
@@ -15,6 +20,8 @@ export interface ToolGuide {
   /** Keywords that help match a typed problem statement */
   keywords: string[]
   phase: 'define' | 'measure' | 'analyze' | 'improve' | 'control' | 'data'
+  /** Teaching notes from the Obsidian Lean / Six Sigma / Maths vault */
+  quotes?: ToolGuideQuote[]
 }
 
 /** Plain-language catalog for every major tool. */
@@ -34,6 +41,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
     ],
     keywords: ['project', 'dmaic', 'a3', 'charter', 'problem statement'],
     phase: 'define',
+    quotes: [
+      {
+        text: 'DMAIC (Define, Measure, Analyze, Improve, Control): The core structured project methodology of Six Sigma used to identify root causes and systematically reduce process variation.',
+        source: 'Six Sigma · Six Sigma Tools',
+      },
+    ],
   },
   {
     id: 'data',
@@ -72,6 +85,16 @@ export const TOOL_GUIDES: ToolGuide[] = [
       'outlier',
     ],
     phase: 'measure',
+    quotes: [
+      {
+        text: 'Think of a histogram as a photograph of your data at one point in time… a run chart is a movie.',
+        source: 'Maths · Charts',
+      },
+      {
+        text: 'The median is highly useful early in a project because it is not heavily warped by extreme outliers.',
+        source: 'Maths · Descriptive Statistics',
+      },
+    ],
   },
   {
     id: 'compare',
@@ -118,6 +141,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
       'special cause',
     ],
     phase: 'measure',
+    quotes: [
+      {
+        text: 'Control Charts: Used to monitor process stability over time by distinguishing between common cause variation (inherent noise) and special cause variation (assignable events).',
+        source: 'Six Sigma · Six Sigma Tools',
+      },
+    ],
   },
   {
     id: 'xbarr',
@@ -158,6 +187,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
       'lsl',
     ],
     phase: 'measure',
+    quotes: [
+      {
+        text: 'Process Capability Analysis (Cp, Cpk): Used to measure how well a process meets customer specifications, assessing both the width of the process variation and how centered it is.',
+        source: 'Six Sigma · Six Sigma Tools',
+      },
+    ],
   },
   {
     id: 'pareto',
@@ -181,6 +216,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
       'reject',
     ],
     phase: 'analyze',
+    quotes: [
+      {
+        text: 'Pareto Analysis / Pareto Charts: A tool used to determine the biggest disruptions to flow or most frequent causes of defects, isolating the vital few problems.',
+        source: 'Six Sigma · Six Sigma Tools',
+      },
+    ],
   },
   {
     id: 'ttest',
@@ -207,20 +248,70 @@ export const TOOL_GUIDES: ToolGuide[] = [
       't-test',
       'pvalue',
       'p-value',
+      'hypothesis',
     ],
     phase: 'analyze',
+    quotes: [
+      {
+        text: 'Hypothesis testing is a formal way to use sample data to decide between two competing stories about a process.',
+        source: 'Maths · Hypothesis Testing',
+      },
+      {
+        text: 'A p-value answers: if the null story were true, how often would luck alone create a difference at least this large?',
+        source: 'Maths · Hypothesis Testing',
+      },
+    ],
+  },
+  {
+    id: 'anova',
+    plainName: 'Is at least one group different?',
+    alsoCalled: 'One-way ANOVA',
+    problem:
+      'I have three or more groups (shifts, ovens, suppliers) — is any of them truly different?',
+    does: 'Compares averages across 3+ groups at once and reports whether at least one stands out versus normal within-group noise (F-test + p-value).',
+    how: [
+      'Put each group in its own numeric column (need at least three).',
+      'Select the columns and run the test.',
+      'If p is under 0.05, dig into which group stands out with box plots; then confirm with a focused two-group check if needed.',
+    ],
+    keywords: [
+      'anova',
+      'three',
+      'multiple groups',
+      'several',
+      'ovens',
+      'shifts',
+      'suppliers',
+      'hypothesis',
+      'f-test',
+    ],
+    phase: 'analyze',
+    quotes: [
+      {
+        text: 'ANOVA… is a statistical tool used to compare the averages (means) of three or more groups to see if at least one group is significantly different from the others.',
+        source: 'Maths · ANOVA',
+      },
+      {
+        text: 'Instead of doing ten separate t-tests… you run one ANOVA test to ask: “Are the averages of all five groups the same, or is at least one group significantly different?”',
+        source: 'Maths · ANOVA',
+      },
+      {
+        text: 'The F-statistic tells you if the differences between your groups are much larger than the natural variation within each group.',
+        source: 'Maths · ANOVA',
+      },
+    ],
   },
   {
     id: 'regression',
     plainName: 'Does this input move with that result?',
-    alsoCalled: 'Scatter plot + linear regression',
+    alsoCalled: 'Scatter plot + linear regression + R²',
     problem:
       'I suspect temperature, speed, or sugar content is linked to a result — how strong is the link?',
     does: 'Plots two columns, fits a straight line, and explains how much of the result variation the input explains (R-squared).',
     how: [
       'Pick an input column (X) and a result column (Y).',
       'Look at the scatter and the fit line.',
-      'Read R-squared in plain words — closer to 1 means a tighter link (still not automatic proof of cause).',
+      'Read R-squared in plain words — closer to 1 means a tighter link (still not automatic proof of cause). Always glance at the p-value too.',
     ],
     keywords: [
       'predict',
@@ -234,8 +325,23 @@ export const TOOL_GUIDES: ToolGuide[] = [
       'scatter',
       'temperature',
       'speed',
+      'predictive',
     ],
     phase: 'analyze',
+    quotes: [
+      {
+        text: 'At its core, R² represents the percentage of variation in your dependent variable (the outcome) that is explained by your independent variable (the predictor).',
+        source: 'Maths · R2',
+      },
+      {
+        text: 'If you only collect two random data points, you can always draw a straight line perfectly through them… you must always look at the p-value alongside your R².',
+        source: 'Maths · R2',
+      },
+      {
+        text: 'Linear Regression: Fits a straight line to data points using the least squares method to predict outcomes based on independent variables.',
+        source: 'Maths · Hypothesis Testing',
+      },
+    ],
   },
   {
     id: 'gage',
@@ -259,6 +365,16 @@ export const TOOL_GUIDES: ToolGuide[] = [
       'repeatability',
     ],
     phase: 'measure',
+    quotes: [
+      {
+        text: 'Measurement System Analysis (MSA) / Gauge R&R: A tool used to verify the accuracy and reliability of measurement instruments, such as packaging scales.',
+        source: 'Six Sigma · Six Sigma Tools',
+      },
+      {
+        text: 'Gage R&R Variance Partitioning: Divides total observed variance into physical part-to-part variation and measurement system error.',
+        source: 'Maths · Descriptive Statistics',
+      },
+    ],
   },
   {
     id: 'montecarlo',
@@ -284,6 +400,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
       'target time',
     ],
     phase: 'improve',
+    quotes: [
+      {
+        text: 'The largest source of Setup and Adjustment time is typically changeovers… which can be addressed through a SMED program.',
+        source: 'Lean · Big 6 Losses',
+      },
+    ],
   },
   {
     id: 'fishbone',
@@ -298,6 +420,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
     ],
     keywords: ['cause', 'brainstorm', 'fishbone', 'ishikawa', 'why', 'root'],
     phase: 'analyze',
+    quotes: [
+      {
+        text: 'Cause-and-Effect Diagrams (Fishbone/Ishikawa): A brainstorming and analysis tool applied to trace back the underlying root causes of defects.',
+        source: 'Six Sigma · Six Sigma Tools',
+      },
+    ],
   },
   {
     id: 'fivewhys',
@@ -327,6 +455,108 @@ export const TOOL_GUIDES: ToolGuide[] = [
     ],
     keywords: ['fmea', 'risk', 'failure', 'prevent', 'rpn', 'severity'],
     phase: 'analyze',
+  },
+  {
+    id: 'yield',
+    plainName: 'First-pass yield / scrap',
+    alsoCalled: 'FPY · quality rate',
+    problem:
+      'We made a lot of pieces — how many were good the first time, and is startup worse than steady run?',
+    does: 'Turns good vs total counts into first-pass yield % and scrap/rework %. Optional split by period (startup vs run).',
+    how: [
+      'Enter good (first pass) and total produced for the shift or batch.',
+      'Or use By period to compare startup hour vs steady run.',
+      'Set an optional FPY target, then Pareto defect reasons if you miss it.',
+    ],
+    keywords: [
+      'yield',
+      'scrap',
+      'fpy',
+      'first pass',
+      'rework',
+      'startup',
+      'reject',
+      'quality rate',
+    ],
+    phase: 'measure',
+    quotes: [
+      {
+        text: 'Process Defects account for defective parts produced during stable (steady-state) production… OEE measures quality from a First Pass Yield perspective.',
+        source: 'Lean · Big 6 Losses',
+      },
+      {
+        text: 'Reduced Yield accounts for defective parts produced from startup until stable production is reached… most commonly tracked after changeovers.',
+        source: 'Lean · Big 6 Losses',
+      },
+    ],
+  },
+  {
+    id: 'oee',
+    plainName: 'Is the line effective?',
+    alsoCalled: 'OEE lite',
+    problem:
+      'We feel slow and stopped a lot — where is the real loss: downtime, speed, or quality?',
+    does: 'Computes Availability × Performance × Quality and highlights the weakest factor in plain English.',
+    how: [
+      'Enter planned time, downtime, ideal cycle time, total pieces, and good pieces (same time units).',
+      'Read which factor is dragging OEE down.',
+      'Attack that loss next (Pareto downtime reasons, small stops, or scrap codes).',
+    ],
+    keywords: [
+      'oee',
+      'availability',
+      'performance',
+      'downtime',
+      'slow',
+      'efficiency',
+      'equipment',
+      'six big',
+    ],
+    phase: 'measure',
+    quotes: [
+      {
+        text: 'Overall Equipment Effectiveness (OEE): A metric that measures manufacturing efficiency by multiplying availability, performance rate, and quality rate.',
+        source: 'Lean · Lean Tools',
+      },
+      {
+        text: 'Using the Six Big Losses framework creates a concrete path to improve your OEE score.',
+        source: 'Lean · Big 6 Losses',
+      },
+    ],
+  },
+  {
+    id: 'beforeafter',
+    plainName: 'Did the fix work?',
+    alsoCalled: 'Before vs after check',
+    problem:
+      'We changed a setting / method / part — did the numbers actually get better, or are we guessing?',
+    does: 'Compares Before and After columns, says whether the improvement looks real vs lucky noise, and whether it moved the right direction.',
+    how: [
+      'Put before samples in one column and after samples in another.',
+      'Choose whether lower or higher is better.',
+      'If the gain looks real, pin the report and control-chart the after stream.',
+    ],
+    keywords: [
+      'before',
+      'after',
+      'fix',
+      'improvement',
+      'kaizen',
+      'did it work',
+      'countermeasure',
+      'validate',
+    ],
+    phase: 'improve',
+    quotes: [
+      {
+        text: 'Kaizen: A philosophy of continuous, small incremental improvements involving everyone from top management to shop floor personnel.',
+        source: 'Lean · Lean Tools',
+      },
+      {
+        text: 'PDCA Cycle (Plan-Do-Check-Act): A continuous problem-solving framework used to develop, test, and implement solutions.',
+        source: 'Lean · Lean Tools',
+      },
+    ],
   },
 ]
 
@@ -366,19 +596,19 @@ export const SITUATIONS: SituationOption[] = [
     id: 'two-groups',
     label: 'Is A really better than B?',
     hint: 'Shifts, ovens, suppliers, lines',
-    toolIds: ['data', 'compare', 'ttest'],
+    toolIds: ['data', 'compare', 'ttest', 'anova'],
   },
   {
     id: 'relationship',
     label: 'Does one thing drive another?',
-    hint: 'Temperature, speed, settings vs result',
+    hint: 'Temperature, speed, settings vs result — predictive / R²',
     toolIds: ['data', 'regression'],
   },
   {
     id: 'causes',
     label: 'Need to find root causes',
     hint: 'Brainstorm then prove',
-    toolIds: ['pareto', 'fishbone', 'fivewhys', 'fmea', 'ttest'],
+    toolIds: ['pareto', 'fishbone', 'fivewhys', 'fmea', 'ttest', 'anova'],
   },
   {
     id: 'time',
@@ -403,5 +633,41 @@ export const SITUATIONS: SituationOption[] = [
     label: 'Prevent failures before they happen',
     hint: 'Risk ranking and controls',
     toolIds: ['fmea', 'projects', 'imr'],
+  },
+  {
+    id: 'red-flag',
+    label: 'Something looks wrong right now',
+    hint: 'Andon moment — numbers or product look off this shift',
+    toolIds: ['visual', 'imr', 'fishbone', 'fivewhys', 'yield'],
+  },
+  {
+    id: 'changeover',
+    label: 'Changeover is killing us',
+    hint: 'Long setups, make-ready, startup scrap after swaps',
+    toolIds: ['montecarlo', 'yield', 'pareto', 'projects'],
+  },
+  {
+    id: 'yield-drop',
+    label: 'Yield / scrap jumped',
+    hint: 'First-pass yield down — startup or steady run',
+    toolIds: ['yield', 'pareto', 'imr', 'fishbone'],
+  },
+  {
+    id: 'fix-check',
+    label: 'Did our fix actually work?',
+    hint: 'Before vs after proof after a change',
+    toolIds: ['beforeafter', 'data', 'imr', 'visual'],
+  },
+  {
+    id: 'slow-line',
+    label: 'Line feels slow / blocked',
+    hint: 'Downtime, small stops, slow cycles, bottleneck',
+    toolIds: ['oee', 'pareto', 'montecarlo', 'data'],
+  },
+  {
+    id: 'messy',
+    label: 'Workplace is messy / hard to run',
+    hint: '5S, motion waste, tools not at point of use',
+    toolIds: ['projects', 'fishbone', 'fivewhys', 'pareto'],
   },
 ]

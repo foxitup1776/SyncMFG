@@ -31,6 +31,20 @@ export function ToolGuidePanel({ toolId }: { toolId: AppView }) {
           <li key={step}>{step}</li>
         ))}
       </ol>
+
+      {guide.quotes && guide.quotes.length > 0 ? (
+        <>
+          <h3 className="subhead">From your teaching notes</h3>
+          <ul className="quote-list compact">
+            {guide.quotes.map((q) => (
+              <li key={q.text}>
+                <blockquote>“{q.text}”</blockquote>
+                <cite>{q.source}</cite>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
     </section>
   )
 }

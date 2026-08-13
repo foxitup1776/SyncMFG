@@ -807,6 +807,232 @@ select {
   margin-bottom: 0.75rem;
 }
 
+.pathway-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+  margin: 0.5rem 0 1.25rem;
+}
+
+.pathway-grid.compact {
+  margin-bottom: 0.5rem;
+}
+
+.pathway-tile {
+  text-align: left;
+  border: 1px solid var(--line);
+  background: linear-gradient(165deg, #f7faf9 0%, #eef4f3 100%);
+  border-radius: 14px;
+  padding: 1rem 1rem 1.1rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.35rem;
+  color: var(--ink);
+  min-height: 8.5rem;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.pathway-tile:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.pathway-tile.selected {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  background: #fff;
+}
+
+.pathway-short {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.pathway-tile strong {
+  font-size: 1.05rem;
+  line-height: 1.25;
+}
+
+.pathway-sub {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
+
+.pathway-detail .hero-copy {
+  margin: 0.35rem 0 0.75rem;
+}
+
+.quote-list {
+  list-style: none;
+  margin: 0.5rem 0 1.25rem;
+  padding: 0;
+  display: grid;
+  gap: 0.85rem;
+}
+
+.quote-list.compact {
+  margin-bottom: 0.5rem;
+}
+
+.quote-list blockquote {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  border-left: 3px solid var(--accent);
+  background: rgba(47, 111, 106, 0.06);
+  color: var(--ink);
+  font-style: italic;
+  line-height: 1.45;
+}
+
+.quote-list cite {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  font-style: normal;
+  color: var(--ink-soft);
+}
+
+.example-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.9rem 1rem;
+  margin: 0.5rem 0 1.25rem;
+  background: #fff;
+}
+
+.example-card p {
+  margin: 0.4rem 0 0;
+  color: var(--ink-soft);
+}
+
+.pathway-steps {
+  margin: 0.5rem 0 1rem;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.pathway-steps li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.pathway-steps p {
+  margin: 0.3rem 0 0;
+  color: var(--ink-soft);
+  max-width: 42rem;
+}
+
+.catalog-toggle {
+  display: grid;
+  gap: 0.5rem;
+  justify-items: start;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.form-grid label,
+.inline-target {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+
+.form-grid input,
+.inline-target input {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.65rem 0.75rem;
+  color: var(--ink);
+  background: #fff;
+}
+
+.table-edit {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.table-edit-head,
+.table-edit-row {
+  display: grid;
+  grid-template-columns: 1.4fr 0.7fr 0.7fr auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.table-edit-head {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.table-edit-row input {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
+  width: 100%;
+}
+
+.period-list {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.period-list li {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.period-list span {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+
+.goal-fieldset {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.75rem 1rem 1rem;
+  margin: 0.85rem 0 0;
+}
+
+.goal-fieldset legend {
+  padding: 0 0.35rem;
+  font-weight: 600;
+}
+
+.inline-target {
+  margin-top: 0.75rem;
+  max-width: 220px;
+}
+
 .situation-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
