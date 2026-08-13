@@ -5,18 +5,12 @@ import {
   removeSharePasswordAt,
 } from '../auth/passwords'
 import { sessionMinutesLeft } from '../auth/session'
-import {
-  pullFromCouch,
-  pushToCouch,
-  testCouchConnection,
-} from '../storage/couchSync'
 import { loadSettings, saveSettings, type AppSettings } from '../storage/settings'
 
 export function SettingsPage() {
   const [settings, setSettings] = useState<AppSettings>(() => loadSettings())
   const [newPassword, setNewPassword] = useState('')
   const [note, setNote] = useState('')
-  const [busy, setBusy] = useState(false)
 
   function persist(next: AppSettings) {
     setSettings(next)
@@ -29,29 +23,6 @@ export function SettingsPage() {
     if (result.ok) {
       setNewPassword('')
       setSettings(loadSettings())
-    }
-  }
-
-  async function runCouch(action: 'test' | 'push' | 'pull') {
-    setBusy(true)
-    setNote('')
-    try {
-      saveSettings(settings)
-      const msg =
-        action === 'test'
-          ? await testCouchConnection()
-          : action === 'push'
-            ? await pushToCouch()
-            : await pullFromCouch()
-      setNote(msg)
-    } catch (err) {
-      setNote(
-        err instanceof Error
-          ? `${err.message} — CouchDB only works when you can reach FoxHome on the home network (and CORS is allowed).`
-          : 'CouchDB request failed.',
-      )
-    } finally {
-      setBusy(false)
     }
   }
 
@@ -119,7 +90,7 @@ export function SettingsPage() {
       </section>
 
       <section className="panel">
-        <h3>Server email (optional)</h3>
+        <h3>Email send key (optional)</h3>
         <p className="lede">
           Free option: create an access key at{' '}
           <a href="https://web3forms.com" target="_blank" rel="noreferrer">
@@ -135,74 +106,6 @@ export function SettingsPage() {
           onChange={(e) => persist({ ...settings, web3formsKey: e.target.value.trim() })}
           placeholder="Your access key"
         />
-      </section>
-
-      <section className="panel">
-        <h3>FoxHome CouchDB sync</h3>
-        <p className="lede">
-          Optional. When you are on home Wi‑Fi, push/pull datasets to your Pi.
-          Docs older than 30 days are skipped on pull; local copies still
-          auto-delete after 30 days.
-        </p>
-        <div className="field-grid">
-          <div>
-            <label>CouchDB URL</label>
-            <input
-              value={settings.couchUrl}
-              onChange={(e) => persist({ ...settings, couchUrl: e.target.value })}
-            />
-          </div>
-          <div>
-            <label>Database name</label>
-            <input
-              value={settings.couchDb}
-              onChange={(e) => persist({ ...settings, couchDb: e.target.value })}
-            />
-          </div>
-          <div>
-            <label>Username (optional)</label>
-            <input
-              value={settings.couchUser}
-              onChange={(e) => persist({ ...settings, couchUser: e.target.value })}
-            />
-          </div>
-          <div>
-            <label>Password (optional)</label>
-            <input
-              type="password"
-              value={settings.couchPassword}
-              onChange={(e) =>
-                persist({ ...settings, couchPassword: e.target.value })
-              }
-            />
-          </div>
-        </div>
-        <div className="row actions">
-          <button
-            type="button"
-            className="btn secondary"
-            disabled={busy}
-            onClick={() => runCouch('test')}
-          >
-            Test connection
-          </button>
-          <button
-            type="button"
-            className="btn secondary"
-            disabled={busy}
-            onClick={() => runCouch('push')}
-          >
-            Push datasets
-          </button>
-          <button
-            type="button"
-            className="btn primary"
-            disabled={busy}
-            onClick={() => runCouch('pull')}
-          >
-            Pull datasets
-          </button>
-        </div>
       </section>
 
       {note ? <p className="share-note panel soft">{note}</p> : null}

@@ -27,7 +27,7 @@ Private Lean Six Sigma workbench — paste Excel data, run analyses, email or pr
 
 **Share & setup**
 - Email, Print/PDF, optional Web3Forms send
-- Settings: extra passwords, session length, FoxHome CouchDB sync
+- Settings: extra passwords, session length
 - Installable PWA (Add to Home Screen)
 
 ## Local development
