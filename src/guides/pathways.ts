@@ -718,24 +718,24 @@ export const PATHWAYS: Pathway[] = [
     },
     steps: [
       {
-        title: 'Capture the problem in a project',
-        detail: 'Write what is hard about the job and what “easier & safer” looks like.',
-        toolId: 'projects',
+        title: 'Run a waste walk',
+        detail: 'Tap DOWNTIME wastes as you see them — log observations and impact.',
+        toolId: 'wastewalk',
       },
       {
-        title: 'Cluster causes',
-        detail: 'Fishbone: motion, method, material location, measurement, machine, people.',
+        title: 'Score 5S',
+        detail: 'Sort → Sustain checklist with 1–5 taps; fix the weakest pillar first.',
+        toolId: 'fives',
+      },
+      {
+        title: 'Cluster causes if needed',
+        detail: 'Fishbone on the biggest waste theme (often Motion or Waiting).',
         toolId: 'fishbone',
       },
       {
-        title: 'Dig one pain point',
-        detail: '5 Whys on “why do we hunt for the torque wrench every changeover?”',
-        toolId: 'fivewhys',
-      },
-      {
-        title: 'If waste shows up as scrap or delays',
-        detail: 'Pareto the top delay or defect codes to prioritize the 5S work.',
-        toolId: 'pareto',
+        title: 'Keep actions in a project',
+        detail: 'Owners, due dates, and before/after proof.',
+        toolId: 'projects',
       },
     ],
     relatedSituations: ['messy', 'causes', 'changeover'],

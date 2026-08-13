@@ -558,6 +558,67 @@ export const TOOL_GUIDES: ToolGuide[] = [
       },
     ],
   },
+  {
+    id: 'wastewalk',
+    plainName: 'Waste walk (DOWNTIME)',
+    alsoCalled: '8 wastes · TIMWOODS · Gemba walk sheet',
+    problem:
+      'I need a simple floor form to spot the eight Lean wastes with clickable categories.',
+    does: 'Lets you tap Defects, Overproduction, Waiting, Non-utilized talent, Transportation, Inventory, Motion, and Extra-processing, then log observations and impact.',
+    how: [
+      'Enter the area and walk a full cycle before asking questions.',
+      'Tap a waste tile when you see it, then Log observation.',
+      'Mark impact High/Med/Low and optional ideas — pin the report into a project.',
+    ],
+    keywords: [
+      'waste',
+      'downtime',
+      'timwood',
+      'gemba',
+      'walk',
+      'motion',
+      'waiting',
+      'inventory',
+      '8 waste',
+      'eight waste',
+    ],
+    phase: 'analyze',
+    quotes: [
+      {
+        text: 'Eight Lean Wastes: Transportation, Inventory, Motion, Waiting, Overproduction, Overprocessing, Defects, Non-utilized Talent.',
+        source: 'Lean · Lean Tools',
+      },
+      {
+        text: 'Gemba (Gemba Walk): The practice of physically going to the “real place”… to directly observe processes and understand problems firsthand.',
+        source: 'Lean · Lean Tools',
+      },
+    ],
+  },
+  {
+    id: 'fives',
+    plainName: '5S workplace audit',
+    alsoCalled: 'Sort, Set, Shine, Standardize, Sustain',
+    problem:
+      'The station is messy or hard to run — I need a scored 5S checklist, not a lecture.',
+    does: 'Scores each 5S pillar 1–5 with training-style prompts and highlights the weakest pillar.',
+    how: [
+      'Name the area.',
+      'Tap 1–5 for Sort, Set in order, Shine, Standardize, Sustain.',
+      'Write actions for the lowest score and re-audit later.',
+    ],
+    keywords: ['5s', 'five s', 'sort', 'shine', 'standardize', 'sustain', 'messy', 'housekeeping'],
+    phase: 'improve',
+    quotes: [
+      {
+        text: '5S Methodology: A workplace organization system consisting of five steps (Sort, Straighten, Shine, Standardize, Sustain) to perform work safely and eliminate waste.',
+        source: 'Lean · Lean Tools',
+      },
+      {
+        text: 'Point of Use Storage (POUS): Keeping materials, tools, and information physically staged at the exact location where they are needed.',
+        source: 'Lean · Lean Tools',
+      },
+    ],
+  },
 ]
 
 export function getToolGuide(id: AppView): ToolGuide | undefined {
@@ -668,6 +729,6 @@ export const SITUATIONS: SituationOption[] = [
     id: 'messy',
     label: 'Workplace is messy / hard to run',
     hint: '5S, motion waste, tools not at point of use',
-    toolIds: ['projects', 'fishbone', 'fivewhys', 'pareto'],
+    toolIds: ['wastewalk', 'fives', 'projects', 'fishbone'],
   },
 ]

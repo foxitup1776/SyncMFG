@@ -70,6 +70,12 @@ export function suggestTools(
       bump('montecarlo', 4, 'Changeover time risk')
       bump('yield', 3, 'Watch startup scrap after changeover')
     }
+    if (/\b(waste|gemba|timwood|downtime|8 waste|eight waste)\b/.test(text)) {
+      bump('wastewalk', 6, 'Sounds like a waste walk')
+    }
+    if (/\b(5s|five s|messy|housekeeping|sort|shine)\b/.test(text)) {
+      bump('fives', 5, 'Sounds like a 5S audit')
+    }
   }
 
   // Sensible default starter pack if nothing matched

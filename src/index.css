@@ -715,14 +715,242 @@ select {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1rem;
+  margin-top: 1rem;
 }
 
-.fish-head {
-  margin-bottom: 1rem;
+.fishbone-diagram {
+  overflow-x: auto;
+  padding: 0.5rem;
+}
+
+.fish-svg {
+  width: 100%;
+  min-width: 640px;
+  height: auto;
+  display: block;
+}
+
+.fish-head-label {
+  color: #f4f8f7;
+  font-size: 12px;
+  line-height: 1.25;
+  padding: 0.35rem 0.4rem;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.fish-head-label span {
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 10px;
+  opacity: 0.85;
+}
+
+.fish-head-label strong {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fish-cat {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fish-cause {
+  font-size: 11px;
 }
 
 .bone-row {
   margin-bottom: 0.45rem;
+}
+
+.interpret-banner h3 {
+  margin: 0.15rem 0 0.45rem;
+}
+
+.interpret-banner p {
+  margin: 0.35rem 0;
+  color: var(--ink-soft);
+}
+
+.waste-chip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 0.65rem;
+  margin: 0.75rem 0;
+}
+
+.waste-chip {
+  position: relative;
+  text-align: left;
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 14px;
+  padding: 0.85rem 0.9rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.25rem;
+  color: var(--ink);
+  min-height: 6.5rem;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.waste-chip:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.waste-chip.selected {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  background: #f3f8f7;
+}
+
+.waste-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 8px;
+  background: var(--teal);
+  color: #f3f7f7;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.waste-letter.sm {
+  width: 1.35rem;
+  height: 1.35rem;
+  font-size: 0.75rem;
+}
+
+.waste-short {
+  font-size: 0.82rem;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+
+.waste-count {
+  position: absolute;
+  top: 0.55rem;
+  right: 0.55rem;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 999px;
+  min-width: 1.35rem;
+  text-align: center;
+  padding: 0.1rem 0.35rem;
+}
+
+.waste-detail {
+  display: grid;
+  gap: 0.65rem;
+  justify-items: start;
+  margin-top: 0.5rem;
+}
+
+.obs-list {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.obs-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.obs-head {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.obs-head .btn {
+  margin-left: auto;
+}
+
+.impact-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.impact-chip {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  text-transform: capitalize;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.impact-chip.on.low {
+  background: #e8f0ee;
+  border-color: var(--accent);
+}
+
+.impact-chip.on.medium {
+  background: #f5efe3;
+  border-color: #b08948;
+}
+
+.impact-chip.on.high {
+  background: #f8e8e8;
+  border-color: #9b2c2c;
+  color: #9b2c2c;
+}
+
+.fives-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.fives-card h3 {
+  margin-bottom: 0.35rem;
+}
+
+.tip-list {
+  margin: 0.35rem 0 0.75rem;
+  padding-left: 1.1rem;
+  color: var(--ink-soft);
+  font-size: 0.9rem;
+}
+
+.score-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.score-chip {
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #fff;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.score-chip.on {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #f3f7f7;
 }
 
 .bone-row input {

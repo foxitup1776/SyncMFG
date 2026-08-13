@@ -16,6 +16,7 @@ import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset, listDatasets } from '../storage/datasets'
 import { numericColumn, numericColumnNames } from '../stats/column'
 import { fmt } from '../stats/descriptive'
+import { describeR2 } from '../stats/distributionShape'
 import { simpleRegression } from '../stats/regression'
 
 export function RegressionTool() {
@@ -30,26 +31,26 @@ export function RegressionTool() {
   const ys = dataset && yCol ? numericColumn(dataset.table, yCol) : []
   const result = useMemo(() => simpleRegression(xs, ys), [xs, ys])
 
+  const r2Reading = useMemo(
+    () => (result ? describeR2(result.r2, result.r) : null),
+    [result],
+  )
+
   const report: AnalysisReport | null = useMemo(() => {
-    if (!result || !dataset) return null
-    const strength =
-      Math.abs(result.r) >= 0.8
-        ? 'strong'
-        : Math.abs(result.r) >= 0.5
-          ? 'moderate'
-          : 'weak'
+    if (!result || !dataset || !r2Reading) return null
     return {
       title: `Does this input move with that result? — ${xCol} → ${yCol}`,
-      summary: `There is a ${strength} straight-line link between “${xCol}” and “${yCol}”. About ${fmt(result.r2 * 100, 1)}% of the up-and-down in ${yCol} is explained by ${xCol} (R-squared = ${fmt(result.r2, 3)}).`,
+      summary: r2Reading.relatedPlain.replace(/\bX\b/g, xCol).replace(/\bY\b/g, yCol),
       bullets: [
-        `Rule of thumb from the line: ${yCol} ≈ ${fmt(result.intercept)} + ${fmt(result.slope)} × ${xCol}.`,
-        `They move ${result.r >= 0 ? 'in the same direction' : 'in opposite directions'} (correlation ${fmt(result.r, 3)}).`,
+        `R² = ${fmt(result.r2, 3)} (${fmt(result.r2 * 100, 1)}%) is ${r2Reading.band}. Rule of thumb: ≥0.8 very high / related, ~0.3–0.6 moderate, under 0.1 very low / mostly unrelated.`,
+        `Rule of thumb from the line: ${yCol} ≈ ${fmt(result.intercept)} + ${fmt(result.slope)} × ${xCol}. When ${xCol} goes up by 1, ${yCol} moves about ${fmt(result.slope)} on average.`,
+        `Correlation r = ${fmt(result.r, 3)} — ${result.r >= 0 ? 'same direction' : 'opposite directions'}.`,
         `Based on ${result.n} paired rows from “${dataset.name}”.`,
-        'Important: moving together is not automatic proof that X causes Y.',
+        r2Reading.caution,
       ],
       termsUsed: ['r-squared', 'correlation', 'regression', 'slope'],
     }
-  }, [result, dataset, xCol, yCol])
+  }, [result, dataset, xCol, yCol, r2Reading])
 
   return (
     <div className="tool-view">
@@ -106,8 +107,20 @@ export function RegressionTool() {
         </div>
       </section>
 
-      {result ? (
+      {result && r2Reading ? (
         <>
+          <section className="panel soft interpret-banner">
+            <p className="guide-kicker">Chart interpretation</p>
+            <h3>
+              R² is {r2Reading.band} ({fmt(result.r2 * 100, 1)}%)
+            </h3>
+            <p>
+              {r2Reading.relatedPlain
+                .replace(/\bX\b/g, `“${xCol}”`)
+                .replace(/\bY\b/g, `“${yCol}”`)}
+            </p>
+            <p className="meta">{r2Reading.caution}</p>
+          </section>
           <div className="chart-card">
             <h3>Scatter with fit line</h3>
             <div className="chart-frame">

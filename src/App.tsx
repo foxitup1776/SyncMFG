@@ -13,6 +13,7 @@ import { purgeExpiredProjects } from './storage/projects'
 import { AnovaTool } from './tools/AnovaTool'
 import { BeforeAfterTool } from './tools/BeforeAfterTool'
 import { CapabilityTool } from './tools/CapabilityTool'
+import { FiveSTool } from './tools/FiveSTool'
 import { CompareTool } from './tools/CompareTool'
 import { FishboneTool } from './tools/FishboneTool'
 import { FiveWhysTool } from './tools/FiveWhysTool'
@@ -25,6 +26,7 @@ import { ParetoTool } from './tools/ParetoTool'
 import { RegressionTool } from './tools/RegressionTool'
 import { TTestTool } from './tools/TTestTool'
 import { VisualTool } from './tools/VisualTool'
+import { WasteWalkTool } from './tools/WasteWalkTool'
 import { XbarRTool } from './tools/XbarRTool'
 import { YieldTool } from './tools/YieldTool'
 
@@ -169,6 +171,16 @@ export default function App() {
       {view === 'beforeafter' ? (
         <ToolFrame onBack={() => setView('tools')}>
           <BeforeAfterTool />
+        </ToolFrame>
+      ) : null}
+      {view === 'wastewalk' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <WasteWalkTool />
+        </ToolFrame>
+      ) : null}
+      {view === 'fives' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <FiveSTool />
         </ToolFrame>
       ) : null}
     </AppShell>

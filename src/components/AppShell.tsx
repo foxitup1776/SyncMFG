@@ -25,6 +25,8 @@ export type AppView =
   | 'yield'
   | 'oee'
   | 'beforeafter'
+  | 'wastewalk'
+  | 'fives'
 
 const NAV: { id: AppView; label: string }[] = [
   { id: 'home', label: 'Home' },
@@ -53,6 +55,8 @@ const TOOL_VIEWS = new Set<AppView>([
   'yield',
   'oee',
   'beforeafter',
+  'wastewalk',
+  'fives',
 ])
 
 export function AppShell({

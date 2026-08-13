@@ -300,6 +300,30 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
     plain:
       'Continuous small improvements by everyone on the floor — not only big projects. Prove each change with before/after data.',
   },
+  'eight wastes': {
+    id: 'eight-wastes',
+    term: 'Eight wastes (DOWNTIME)',
+    plain:
+      'Defects, Overproduction, Waiting, Non-utilized talent, Transportation, Inventory, Motion, Extra-processing — non-value work to spot on a Gemba walk.',
+  },
+  gemba: {
+    id: 'gemba',
+    term: 'Gemba',
+    plain:
+      'The real place where work happens (the floor). A Gemba walk means go look — don’t improve from the conference room alone.',
+  },
+  '5s': {
+    id: 'five-s',
+    term: '5S',
+    plain:
+      'Sort, Set in order, Shine, Standardize, Sustain — a workplace organization system so work is safer and waste is easier to see.',
+  },
+  'distribution shape': {
+    id: 'distribution-shape',
+    term: 'Distribution shape',
+    plain:
+      'How values pile up on a histogram: bell-shaped, skewed (long tail), flat, or two humps (often mixed groups). Shape guides which “typical” number to trust.',
+  },
 }
 
 export function resolveTerms(ids: string[]): GlossaryTerm[] {

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { FishboneDiagram } from '../components/FishboneDiagram'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
@@ -123,41 +124,37 @@ export function FishboneTool() {
 
       {project ? (
         <>
-          <div className="fishbone-layout">
-            <div className="fish-head panel soft">
-              <strong>Effect</strong>
-              <p>{fishbone.effect.trim() || 'Name the problem'}</p>
-            </div>
-            <div className="fish-bones">
-              {fishbone.bones.map((bone, bi) => (
-                <section key={bone.category} className="panel bone-card">
-                  <h3>{bone.category}</h3>
-                  {bone.causes.map((cause, ci) => (
-                    <div key={ci} className="row bone-row">
-                      <input
-                        value={cause}
-                        placeholder="Possible cause"
-                        onChange={(e) => setCause(bi, ci, e.target.value)}
-                      />
-                      <button
-                        type="button"
-                        className="btn ghost danger"
-                        onClick={() => removeCause(bi, ci)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    className="btn secondary"
-                    onClick={() => addCause(bi)}
-                  >
-                    Add cause
-                  </button>
-                </section>
-              ))}
-            </div>
+          <FishboneDiagram fishbone={fishbone} />
+
+          <div className="fish-bones">
+            {fishbone.bones.map((bone, bi) => (
+              <section key={bone.category} className="panel bone-card">
+                <h3>{bone.category}</h3>
+                {bone.causes.map((cause, ci) => (
+                  <div key={ci} className="row bone-row">
+                    <input
+                      value={cause}
+                      placeholder="Possible cause"
+                      onChange={(e) => setCause(bi, ci, e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="btn ghost danger"
+                      onClick={() => removeCause(bi, ci)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  className="btn secondary"
+                  onClick={() => addCause(bi)}
+                >
+                  Add cause
+                </button>
+              </section>
+            ))}
           </div>
           {report ? (
             <PlainReport

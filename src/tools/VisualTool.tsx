@@ -19,6 +19,7 @@ import {
   quartiles,
   sampleStdDev,
 } from '../stats/descriptive'
+import { readDistributionShape } from '../stats/distributionShape'
 
 export function VisualTool() {
   const [datasetId, setDatasetId] = usePersistedState('tool.visual.dataset', '')
@@ -33,28 +34,48 @@ export function VisualTool() {
   const box = useMemo(() => quartiles(values), [values])
   const bins = useMemo(() => histogramBins(values), [values])
 
+  const shape = useMemo(() => readDistributionShape(values), [values])
+
   const report: AnalysisReport | null = useMemo(() => {
     if (values.length < 2 || !box || !dataset) return null
     const m = mean(values)
     const med = median(values)
     const s = sampleStdDev(values)
+    const range = Math.max(...values) - Math.min(...values)
     return {
       title: `Visual look — ${column}`,
-      summary: `We plotted ${values.length} numbers from “${dataset.name}”, column “${column}”. The histogram shows the shape, the box plot shows the middle and outliers, and the run chart shows order.`,
+      summary: shape
+        ? `Shape reading: ${shape.label}. ${shape.plain}`
+        : `We plotted ${values.length} numbers from “${dataset.name}”, column “${column}”.`,
       bullets: [
-        `Average (mean) = ${fmt(m)}. Middle value (median) = ${fmt(med)}.`,
-        `Spread (standard deviation) = ${fmt(s)}. Middle half of the data sits between ${fmt(box.q1)} and ${fmt(box.q3)}.`,
+        `Dataset “${dataset.name}”, column “${column}” — ${values.length} values. Average = ${fmt(m)}, median = ${fmt(med)}, spread (std. dev.) = ${fmt(s)}.`,
+        `What the numbers cover: lowest ${fmt(Math.min(...values))}, highest ${fmt(Math.max(...values))} (range ${fmt(range)}). Middle half sits between ${fmt(box.q1)} and ${fmt(box.q3)}.`,
+        shape
+          ? `Distribution: ${shape.label}. ${shape.skewHint}`
+          : 'Need a few more points to guess the distribution shape.',
+        m != null && med != null && Math.abs(m - med) > (s ?? 0) * 0.25
+          ? 'Average and middle disagree a bit — prefer the median as “typical” until you clean outliers or split mixed groups.'
+          : 'Average and median are in the same ballpark — a single “typical” value is reasonable.',
         box.outliers.length === 0
-          ? 'No strong outliers showed up on the box plot.'
-          : `We flagged ${box.outliers.length} outlier point(s) outside the whiskers: ${box.outliers
+          ? 'No strong outliers on the box plot.'
+          : `Outliers flagged: ${box.outliers
               .slice(0, 8)
               .map((v) => fmt(v))
-              .join(', ')}${box.outliers.length > 8 ? '…' : ''}.`,
-        'Next step if the shape looks unstable over time: run an I-MR control chart on the same column.',
+              .join(', ')}${box.outliers.length > 8 ? '…' : ''}. Investigate those before changing the whole process.`,
+        'Histogram = photo of the pile. Box plot = middle 50% + whiskers. Run chart = movie in time order — next use I-MR if the movie looks jumpy.',
       ],
-      termsUsed: ['mean', 'median', 'standard deviation', 'histogram', 'box plot', 'run chart', 'outlier'],
+      termsUsed: [
+        'mean',
+        'median',
+        'standard deviation',
+        'histogram',
+        'box plot',
+        'run chart',
+        'outlier',
+        'distribution shape',
+      ],
     }
-  }, [values, box, dataset, column])
+  }, [values, box, dataset, column, shape])
 
   return (
     <div className="tool-view">
@@ -77,6 +98,14 @@ export function VisualTool() {
 
       {values.length >= 2 && box ? (
         <>
+          {shape ? (
+            <section className="panel soft interpret-banner">
+              <p className="guide-kicker">Chart interpretation</p>
+              <h3>{shape.label}</h3>
+              <p>{shape.plain}</p>
+              <p className="meta">{shape.skewHint}</p>
+            </section>
+          ) : null}
           <div className="chart-grid">
             <HistogramChart bins={bins} />
             <BoxPlotChart box={box} />

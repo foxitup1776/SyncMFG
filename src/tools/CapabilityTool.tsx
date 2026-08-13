@@ -9,6 +9,7 @@ import { getDataset } from '../storage/datasets'
 import { numericColumn } from '../stats/column'
 import { computeCapability } from '../stats/capability'
 import { fmt, histogramBins } from '../stats/descriptive'
+import { readDistributionShape } from '../stats/distributionShape'
 
 function parseOptional(raw: string): number | null {
   const t = raw.trim()
@@ -35,9 +36,13 @@ export function CapabilityTool() {
     [values, usl, lsl],
   )
   const bins = useMemo(() => histogramBins(values), [values])
+  const shape = useMemo(() => readDistributionShape(values), [values])
 
   const report: AnalysisReport | null = useMemo(() => {
     if (!result || !dataset) return null
+    const shapeLine = shape
+      ? `Distribution shape: ${shape.label}. ${shape.plain}`
+      : null
     if (usl === null && lsl === null) {
       return {
         title: `Capability — ${column}`,
@@ -45,8 +50,14 @@ export function CapabilityTool() {
           'Enter at least one customer limit (USL and/or LSL) to score capability.',
         bullets: [
           `We have ${result.n} values. Average = ${fmt(result.average)}, overall spread σ = ${fmt(result.stdOverall)}.`,
+          ...(shapeLine ? [shapeLine] : []),
         ],
-        termsUsed: ['cpk', 'specification limit', 'standard deviation'],
+        termsUsed: [
+          'cpk',
+          'specification limit',
+          'standard deviation',
+          'distribution shape',
+        ],
       }
     }
 
@@ -65,6 +76,7 @@ export function CapabilityTool() {
       summary: `Compared “${dataset.name}” column “${column}” to your customer limits. ${verdict}`,
       bullets: [
         `Average = ${fmt(result.average)}. Within-subgroup σ (from moving range) = ${fmt(result.stdWithin)}. Overall σ = ${fmt(result.stdOverall)}.`,
+        ...(shapeLine ? [shapeLine] : []),
         `Short-term: Cp = ${fmt(result.cp)}, Cpk = ${fmt(result.cpk)}.`,
         `Long-term feel: Pp = ${fmt(result.pp)}, Ppk = ${fmt(result.ppk)}.`,
         lsl !== null
@@ -73,7 +85,7 @@ export function CapabilityTool() {
         usl !== null
           ? `${fmt(result.pctAboveUsl, 2)}% of pasted points sit above USL ${fmt(usl)}.`
           : 'No upper spec (USL) entered.',
-        'Cp/Cpk use short-term (within) variation; Pp/Ppk use the overall spread of this whole pasted batch.',
+        'Cp/Cpk use short-term (within) variation; Pp/Ppk use the overall spread of this whole pasted batch. If the shape is two-humped, split the data before trusting Cpk.',
       ],
       termsUsed: [
         'cp',
@@ -82,9 +94,10 @@ export function CapabilityTool() {
         'ppk',
         'specification limit',
         'standard deviation',
+        'distribution shape',
       ],
     }
-  }, [result, dataset, column, usl, lsl])
+  }, [result, dataset, column, usl, lsl, shape])
 
   return (
     <div className="tool-view">
@@ -129,6 +142,13 @@ export function CapabilityTool() {
 
       {result && values.length >= 2 ? (
         <>
+          {shape ? (
+            <section className="panel soft interpret-banner">
+              <p className="guide-kicker">Chart interpretation</p>
+              <h3>{shape.label}</h3>
+              <p>{shape.plain}</p>
+            </section>
+          ) : null}
           <HistogramChart bins={bins} usl={usl} lsl={lsl} />
           <div className="stat-strip">
             <div>
