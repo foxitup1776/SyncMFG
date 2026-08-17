@@ -1373,6 +1373,136 @@ button.linkish {
   text-decoration: underline;
 }
 
+/* Takt / SMED / COPQ shared chips and tags */
+.kind-chip {
+  border: 1px solid var(--line);
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.3rem 0.75rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--ink);
+}
+
+.kind-chip:hover {
+  border-color: var(--accent);
+}
+
+.kind-chip.on {
+  background: rgba(47, 111, 106, 0.12);
+  border-color: var(--teal);
+  box-shadow: inset 0 0 0 1px var(--teal);
+  font-weight: 600;
+}
+
+.kind-chip.internal.on {
+  background: #f8e8e8;
+  border-color: #9b2c2c;
+  box-shadow: inset 0 0 0 1px #9b2c2c;
+  color: #9b2c2c;
+}
+
+.kind-chip.waste.on {
+  background: #f5efe3;
+  border-color: #b08948;
+  box-shadow: inset 0 0 0 1px #b08948;
+  color: #8a6a34;
+}
+
+.kind-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 8px;
+  background: var(--teal);
+  color: #f3f7f7;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.kind-letter.sm {
+  width: 1.35rem;
+  height: 1.35rem;
+  font-size: 0.75rem;
+}
+
+.kind-letter.internal,
+.kind-letter.copq-internal {
+  background: #9b2c2c;
+}
+
+.kind-letter.copq-external {
+  background: #7b1d1d;
+}
+
+.kind-letter.waste,
+.kind-letter.copq-appraisal {
+  background: #b08948;
+}
+
+.load-tag {
+  display: inline-block;
+  white-space: nowrap;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.load-tag.under {
+  background: #e8f0ee;
+  color: #245f5a;
+}
+
+.load-tag.over {
+  background: #f8e8e8;
+  color: #9b2c2c;
+}
+
+.note-warn {
+  border-left: 3px solid #b08948;
+}
+
+.note-warn .tip-list {
+  margin-bottom: 0;
+}
+
+.matrix-edit {
+  margin-top: 0.85rem;
+  display: grid;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+.matrix-edit-row {
+  display: grid;
+  gap: 0.5rem;
+  align-items: center;
+  min-width: 22rem;
+}
+
+.matrix-edit-row input {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 0.55rem 0.65rem;
+  width: 100%;
+}
+
+.matrix-edit-row.head input {
+  font-weight: 700;
+  background: #f7faf9;
+}
+
+.matrix-edit-row.head > span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
 @media print {
   body {
     background: #fff !important;

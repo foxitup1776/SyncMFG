@@ -11,8 +11,10 @@ import { ToolsPage } from './pages/ToolsPage'
 import { purgeExpiredDatasets } from './storage/datasets'
 import { purgeExpiredProjects } from './storage/projects'
 import { AnovaTool } from './tools/AnovaTool'
+import { AttributeChartTool } from './tools/AttributeChartTool'
 import { BeforeAfterTool } from './tools/BeforeAfterTool'
 import { CapabilityTool } from './tools/CapabilityTool'
+import { CopqTool } from './tools/CopqTool'
 import { FiveSTool } from './tools/FiveSTool'
 import { CompareTool } from './tools/CompareTool'
 import { FishboneTool } from './tools/FishboneTool'
@@ -23,7 +25,12 @@ import { ImrTool } from './tools/ImrTool'
 import { MonteCarloTool } from './tools/MonteCarloTool'
 import { OeeTool } from './tools/OeeTool'
 import { ParetoTool } from './tools/ParetoTool'
+import { ProportionTool } from './tools/ProportionTool'
 import { RegressionTool } from './tools/RegressionTool'
+import { SampleSizeTool } from './tools/SampleSizeTool'
+import { SigmaTool } from './tools/SigmaTool'
+import { SmedTool } from './tools/SmedTool'
+import { TaktTool } from './tools/TaktTool'
 import { TTestTool } from './tools/TTestTool'
 import { VisualTool } from './tools/VisualTool'
 import { WasteWalkTool } from './tools/WasteWalkTool'
@@ -181,6 +188,41 @@ export default function App() {
       {view === 'fives' ? (
         <ToolFrame onBack={() => setView('tools')}>
           <FiveSTool onNavigate={setView} />
+        </ToolFrame>
+      ) : null}
+      {view === 'takt' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <TaktTool onNavigate={setView} />
+        </ToolFrame>
+      ) : null}
+      {view === 'smed' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <SmedTool onNavigate={setView} />
+        </ToolFrame>
+      ) : null}
+      {view === 'copq' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <CopqTool onNavigate={setView} />
+        </ToolFrame>
+      ) : null}
+      {view === 'samplesize' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <SampleSizeTool onNavigate={setView} />
+        </ToolFrame>
+      ) : null}
+      {view === 'sigma' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <SigmaTool onNavigate={setView} />
+        </ToolFrame>
+      ) : null}
+      {view === 'attribute' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <AttributeChartTool onNavigate={setView} />
+        </ToolFrame>
+      ) : null}
+      {view === 'proportions' ? (
+        <ToolFrame onBack={() => setView('tools')}>
+          <ProportionTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
     </AppShell>

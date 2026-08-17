@@ -27,6 +27,13 @@ export type AppView =
   | 'beforeafter'
   | 'wastewalk'
   | 'fives'
+  | 'takt'
+  | 'smed'
+  | 'copq'
+  | 'samplesize'
+  | 'sigma'
+  | 'attribute'
+  | 'proportions'
 
 const NAV: { id: AppView; label: string }[] = [
   { id: 'home', label: 'Home' },
@@ -57,6 +64,13 @@ const TOOL_VIEWS = new Set<AppView>([
   'beforeafter',
   'wastewalk',
   'fives',
+  'takt',
+  'smed',
+  'copq',
+  'samplesize',
+  'sigma',
+  'attribute',
+  'proportions',
 ])
 
 export function AppShell({

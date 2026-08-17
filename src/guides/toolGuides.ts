@@ -487,6 +487,160 @@ export const TOOL_GUIDES: ToolGuide[] = [
     ],
   },
   {
+    id: 'samplesize',
+    plainName: 'How many samples do I need?',
+    alsoCalled: 'Sample size & power analysis',
+    problem:
+      'Before I start measuring, how many pieces do I need so the answer means something?',
+    does: 'Turns the gap you want to find, your usual spread, and how sure you want to be into a sample size — and shows what extra pieces buy you.',
+    how: [
+      'Pick the kind of comparison (two groups, before/after on the same parts, or rates).',
+      'Enter the gap worth finding and your usual spread (or the two rates).',
+      'Write the number on the data collection plan and stick to it.',
+    ],
+    keywords: [
+      'sample size',
+      'how many',
+      'power',
+      'power analysis',
+      'plan',
+      'planning',
+      'before i collect',
+      'how many parts',
+      'alpha',
+      'effect size',
+      'p-hacking',
+    ],
+    phase: 'measure',
+    quotes: [
+      {
+        text: 'A power analysis is a math-based method used to calculate the minimum sample size you need for an experiment before you start collecting data.',
+        source: 'Maths · Power Analysis',
+      },
+      {
+        text: 'Endlessly adding “just one more” data point until you get a significant result dramatically inflates your risk of a false positive… A power analysis is the antidote to p-hacking.',
+        source: 'Maths · Power Analysis',
+      },
+      {
+        text: 'If your sampling method is biased, a large sample size won’t save you.',
+        source: 'Maths · Sampling',
+      },
+    ],
+  },
+  {
+    id: 'sigma',
+    plainName: 'What sigma level are we running?',
+    alsoCalled: 'Process sigma · DPMO · DPU · rolled throughput yield',
+    problem:
+      'Leadership asks for our sigma level or DPMO, and I need the number without guessing at the conversion table.',
+    does: 'Converts defect counts into defects per unit, DPMO, an approximate sigma level (with the 1.5 shift as a clearly-labeled toggle), and rolled yield across multiple steps.',
+    how: [
+      'Enter units inspected, defects found, and how many ways one unit can go wrong.',
+      'Choose whether to add the traditional 1.5 shift — and say which one you quoted.',
+      'Switch to Multi-step to see rolled throughput yield and which step is weakest.',
+    ],
+    keywords: [
+      'sigma',
+      'sigma level',
+      'dpmo',
+      'dpu',
+      'defects per million',
+      'rty',
+      'rolled throughput',
+      'scorecard',
+      'six sigma level',
+      'opportunities',
+    ],
+    phase: 'measure',
+    quotes: [
+      {
+        text: 'In Six Sigma terminology, a true “Six Sigma” process is nearly perfect, producing a maximum of only 3.4 defects per million opportunities (DPMO). For comparison, a 3-sigma process has a 93% success rate (producing 66,800 defects per million), which fails 7% of the time on average.',
+        source: 'Six Sigma · DMAIC Model',
+      },
+      {
+        text: 'Rolling DPMO (YTD): Tracks cumulative defects over multiple time periods.',
+        source: 'Maths · Statistical Process Control',
+      },
+    ],
+  },
+  {
+    id: 'attribute',
+    plainName: 'Is my defect rate stable?',
+    alsoCalled: 'Attribute control charts (p / np / c / u)',
+    problem:
+      'All I have is pass/fail tallies or defect counts — no measurements — but I still need to know if today was really worse.',
+    does: 'Charts counted data with limits built from the count model itself, and coaches you on which of the four attribute charts fits what you counted.',
+    how: [
+      'Say whether you count bad pieces (pass/fail) or defects (a piece can have several).',
+      'Say whether you inspect the same amount every time — that picks the chart for you.',
+      'Enter one row per day or sample, then read the flagged points before reacting.',
+    ],
+    keywords: [
+      'attribute',
+      'p chart',
+      'np chart',
+      'c chart',
+      'u chart',
+      'defect rate',
+      'defectives',
+      'scrap rate over time',
+      'counted data',
+      'pass fail',
+      'proportion chart',
+    ],
+    phase: 'measure',
+    quotes: [
+      {
+        text: 'Attribute Control Charts: Used for discrete count data, including the P chart (fraction defective), NP chart (number defective), C chart (total defect counts), and U chart (defects per inspection unit).',
+        source: 'Maths · Statistical Process Control',
+      },
+      {
+        text: 'If an operator reports a 7% burnt rate this hour, you don’t guess — you know for a fact that the oven is “Out of Control” because 7% is higher than your UCL of 6.6%.',
+        source: 'Maths · Statistics (p-chart worked example)',
+      },
+    ],
+  },
+  {
+    id: 'proportions',
+    plainName: 'Are these rates really different?',
+    alsoCalled: '1-proportion · 2-proportion · chi-square',
+    problem:
+      'Shift 1 scraps 3.6% and Shift 2 scraps 1.7% — is that a real difference, or a busy week?',
+    does: 'Tests one rate against a target, two rates against each other (with a confidence range on the gap), and whether the defect mix itself depends on the group.',
+    how: [
+      'Pick one rate vs a target, two rates, or defect mix by group.',
+      'Enter plain counts — bad pieces and pieces inspected.',
+      'Read the p-value with the confidence range; the range tells you how big the gap could really be.',
+    ],
+    keywords: [
+      'proportion',
+      'rate',
+      'percent defective',
+      'scrap rate',
+      'chi square',
+      'chi-square',
+      'contingency',
+      'defect mix',
+      'pass fail test',
+      'two rates',
+    ],
+    phase: 'analyze',
+    quotes: [
+      {
+        text: 'The Chi-Square test helps you distinguish between genuine, systemic deviations and ordinary random variation.',
+        source: 'Maths · Chi-Square Test',
+      },
+      {
+        text: 'If there is only a 3.5% chance of this happening by “random luck,” it is more likely that the actual breakage rate on that pallet has spiked above 2%.',
+        source: 'Maths · Statistics (binomial spot check)',
+      },
+      {
+        text: 'If your p-value is less than 0.05: you conclude that your results are “statistically significant”. You reject the idea of random chance.',
+        source: 'Maths · P Value',
+      },
+    ],
+  },
+  {
     id: 'yield',
     plainName: 'First-pass yield / scrap',
     alsoCalled: 'FPY · quality rate',
@@ -649,6 +803,146 @@ export const TOOL_GUIDES: ToolGuide[] = [
       },
     ],
   },
+  {
+    id: 'takt',
+    plainName: 'Pace the line',
+    alsoCalled: 'Takt time · cycle balance · Little’s Law',
+    problem:
+      'How often does a piece have to come off the line to keep up with the customer — and which station cannot hold that pace?',
+    does: 'Turns available time and customer demand into takt, charts each station against it, scores imbalance, and solves WIP ≈ throughput × lead time.',
+    how: [
+      'Enter real running time (breaks and planned stops already removed) and how many pieces the customer wants in that time.',
+      'List each station or operator with its cycle time — bars above the dashed takt line cannot keep up.',
+      'Read the bottleneck and imbalance %, then move work off the slowest station instead of asking for speed.',
+      'Use Little’s Law to see how much the pile of work in process is stretching lead time.',
+    ],
+    keywords: [
+      'takt',
+      'pace',
+      'demand',
+      'balance',
+      'bottleneck',
+      'cycle time',
+      'lead time',
+      'wip',
+      'work in process',
+      'little',
+      'flow',
+      'throughput',
+      'line balance',
+      'constraint',
+    ],
+    phase: 'measure',
+    quotes: [
+      {
+        text: 'Takt Time: A calculation that sets the pace of production to exactly match the rate of customer demand (Net available time / Customer demand).',
+        source: 'Lean · Lean Tools',
+      },
+      {
+        text: 'Single Piece Flow (One-Piece Flow): Processing one product unit at a time rather than producing in large batches, reducing wait times and allowing earlier defect detection.',
+        source: 'Lean · Lean Tools',
+      },
+      {
+        text: 'You don’t yell at the fast kids to run faster. You put Herbie at the very front of the line so he sets the pace for everyone.',
+        source: 'Books · The Goal (Theory of Constraints)',
+      },
+      {
+        text: 'Lead Time = Processing Time + Waiting Time + Transport Time.',
+        source: 'Maths · Lean Math',
+      },
+    ],
+  },
+  {
+    id: 'smed',
+    plainName: 'Quick changeover sheet',
+    alsoCalled: 'SMED · internal vs external setup',
+    problem:
+      'Make-ready takes forever and the machine sits dead — what can we do while it is still running?',
+    does: 'Sorts every changeover task into Internal (machine stopped), External (done while running), or Waste, then shows before/after stopped time and the percent you moved off-line.',
+    how: [
+      'Walk one real changeover with a stopwatch — do not use the standard time from the binder.',
+      'Tap Internal, External, or Waste for each task and enter the minutes it took.',
+      'Set a plan per task: move off-line, eliminate, or shorten.',
+      'Read the new machine-stop time, then verify on the next two changeovers and watch startup scrap.',
+    ],
+    keywords: [
+      'smed',
+      'changeover',
+      'setup',
+      'make ready',
+      'make-ready',
+      'die',
+      'quick change',
+      'internal',
+      'external',
+      'setup reduction',
+      'downtime',
+    ],
+    phase: 'improve',
+    quotes: [
+      {
+        text: 'SMED (Single-Minute Exchange of Dies) / Quick Changeovers: A method for drastically reducing setup and changeover times by moving “internal” setup tasks to “external” tasks performed while the machine is still running.',
+        source: 'Lean · Lean Tools',
+      },
+      {
+        text: 'The largest source of Setup and Adjustment time is typically changeovers (also referred to as make ready or setup), which can be addressed through a SMED (Single-Minute Exchange of Die) program.',
+        source: 'Lean · Big 6 Losses',
+      },
+      {
+        text: 'SMED (Single-Minute Exchange of Die): Redesigns changeovers to reduce setup times to under 10 minutes, saving vital capacity.',
+        source: 'Six Sigma · DMAIC Model',
+      },
+      {
+        text: 'Reduced Yield accounts for defective parts produced from startup until stable production is reached… most commonly tracked after changeovers.',
+        source: 'Lean · Big 6 Losses',
+      },
+    ],
+  },
+  {
+    id: 'copq',
+    plainName: 'Money & scrap cost',
+    alsoCalled: 'COPQ · cost of poor quality',
+    problem:
+      'Leadership wants a dollar figure — what is scrap, rework, downtime, and warranty actually costing us?',
+    does: 'Adds up internal failure, external failure, appraisal, and prevention costs into $/month and annualized totals, plus cost per defect and share of sales.',
+    how: [
+      'Tap a bucket and add the cost lines you know — estimates beat blanks.',
+      'Use one loaded rate (material + labour + burden) and keep it consistent.',
+      'Enter defects per month for a cost-per-defect number people remember.',
+      'Compare failure spend against prevention spend, then Pareto the codes behind the biggest line.',
+    ],
+    keywords: [
+      'copq',
+      'cost',
+      'money',
+      'dollar',
+      'scrap cost',
+      'rework cost',
+      'warranty',
+      'returns',
+      'savings',
+      'financial',
+      'budget',
+      'cost of quality',
+      'business case',
+      'roi',
+    ],
+    phase: 'improve',
+    quotes: [
+      {
+        text: 'Process Defects account for defective parts produced during stable (steady-state) production. This includes scrapped parts as well as parts that can be reworked, since OEE measures quality from a First Pass Yield perspective.',
+        source: 'Lean · Big 6 Losses',
+      },
+      {
+        text: 'Any deviation from the exact target incurs a loss. Even if a bearing is technically within spec… it might cause slightly more vibration in the final assembly, wear out slightly faster, or increase warranty claims down the line.',
+        source: 'Six Sigma · Taguchi Robust Design',
+      },
+      {
+        text: 'If a decision doesn’t increase Throughput, decrease Inventory, or decrease Operational Expense, it is not helping the business.',
+        source: 'Books · The Goal',
+      },
+    ],
+  },
 ]
 
 export function getToolGuide(id: AppView): ToolGuide | undefined {
@@ -669,13 +963,22 @@ export const SITUATIONS: SituationOption[] = [
     id: 'defects',
     label: 'Too many defects / scrap',
     hint: 'Quality issues, rejects, rework',
-    toolIds: ['data', 'pareto', 'fishbone', 'fivewhys', 'imr', 'capability'],
+    toolIds: [
+      'data',
+      'pareto',
+      'fishbone',
+      'fivewhys',
+      'imr',
+      'capability',
+      'sigma',
+      'attribute',
+    ],
   },
   {
     id: 'unstable',
     label: 'Process feels unstable',
     hint: 'Numbers jump, drift, or surprise us',
-    toolIds: ['data', 'visual', 'imr', 'xbarr'],
+    toolIds: ['data', 'visual', 'imr', 'xbarr', 'attribute'],
   },
   {
     id: 'specs',
@@ -687,7 +990,7 @@ export const SITUATIONS: SituationOption[] = [
     id: 'two-groups',
     label: 'Is A really better than B?',
     hint: 'Shifts, ovens, suppliers, lines',
-    toolIds: ['data', 'compare', 'ttest', 'anova'],
+    toolIds: ['data', 'compare', 'ttest', 'anova', 'proportions', 'samplesize'],
   },
   {
     id: 'relationship',
@@ -706,6 +1009,12 @@ export const SITUATIONS: SituationOption[] = [
     label: 'Cycle / changeover time risk',
     hint: 'Long or unpredictable times',
     toolIds: ['montecarlo', 'data', 'visual'],
+  },
+  {
+    id: 'plan-data',
+    label: 'About to collect data',
+    hint: 'How many samples, from where, before we run the trial',
+    toolIds: ['samplesize', 'gage', 'data', 'projects', 'visual'],
   },
   {
     id: 'measurement',
@@ -735,13 +1044,13 @@ export const SITUATIONS: SituationOption[] = [
     id: 'changeover',
     label: 'Changeover is killing us',
     hint: 'Long setups, make-ready, startup scrap after swaps',
-    toolIds: ['montecarlo', 'yield', 'pareto', 'projects'],
+    toolIds: ['smed', 'montecarlo', 'yield', 'pareto', 'projects'],
   },
   {
     id: 'yield-drop',
     label: 'Yield / scrap jumped',
     hint: 'First-pass yield down — startup or steady run',
-    toolIds: ['yield', 'pareto', 'imr', 'fishbone'],
+    toolIds: ['yield', 'pareto', 'copq', 'sigma', 'attribute', 'imr', 'fishbone'],
   },
   {
     id: 'fix-check',
@@ -753,12 +1062,24 @@ export const SITUATIONS: SituationOption[] = [
     id: 'slow-line',
     label: 'Line feels slow / blocked',
     hint: 'Downtime, small stops, slow cycles, bottleneck',
-    toolIds: ['oee', 'pareto', 'montecarlo', 'data'],
+    toolIds: ['takt', 'oee', 'pareto', 'montecarlo', 'data'],
   },
   {
     id: 'messy',
     label: 'Workplace is messy / hard to run',
     hint: '5S, motion waste, tools not at point of use',
     toolIds: ['wastewalk', 'fives', 'projects', 'fishbone'],
+  },
+  {
+    id: 'cost',
+    label: 'Need the dollar figure',
+    hint: 'What scrap, rework, downtime, and warranty really cost',
+    toolIds: ['copq', 'pareto', 'yield', 'projects'],
+  },
+  {
+    id: 'pace',
+    label: 'Cannot keep up with demand',
+    hint: 'Takt, bottleneck station, work piling up between steps',
+    toolIds: ['takt', 'oee', 'smed', 'montecarlo'],
   },
 ]

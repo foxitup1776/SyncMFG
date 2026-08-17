@@ -318,11 +318,203 @@ export const GLOSSARY: Record<string, GlossaryTerm> = {
     plain:
       'Sort, Set in order, Shine, Standardize, Sustain — a workplace organization system so work is safer and waste is easier to see.',
   },
+  'sample size': {
+    id: 'sample-size',
+    term: 'Sample size (n)',
+    plain:
+      'How many pieces you plan to measure. Decide it before you start: too few hides a real improvement, too many wastes production.',
+  },
+  'statistical power': {
+    id: 'statistical-power',
+    term: 'Power',
+    plain:
+      'Your chance of actually spotting a real difference if one exists. 80% is the usual target — meaning you would still miss it 1 time in 5.',
+  },
+  alpha: {
+    id: 'alpha',
+    term: 'Alpha (significance level)',
+    plain:
+      'How much false-alarm risk you accept. Alpha 0.05 means a 5% chance of shouting “it changed!” when nothing did.',
+  },
+  'effect size': {
+    id: 'effect-size',
+    term: 'Effect size',
+    plain:
+      'The gap you care about, measured in “normal spreads.” A gap of 10 in a process that normally wanders ±6.5 is an effect size of about 1.5 — easy to see. A gap smaller than the noise needs a lot of pieces.',
+  },
+  'confidence interval': {
+    id: 'confidence-interval',
+    term: 'Confidence range (interval)',
+    plain:
+      'The believable range for the real value, based on your sample. Wide range = you do not have much data yet. If the range covers “no difference,” you cannot claim a difference.',
+  },
+  dpmo: {
+    id: 'dpmo',
+    term: 'DPMO',
+    plain:
+      'Defects Per Million Opportunities. Scales your defect count to a per-million basis so a small trial and a full year can be compared. A “six sigma” process runs 3.4 DPMO.',
+  },
+  dpu: {
+    id: 'dpu',
+    term: 'DPU',
+    plain:
+      'Defects Per Unit — total defects divided by units made. One unit can carry several defects, so DPU can be above 1.',
+  },
+  'sigma level': {
+    id: 'sigma-level',
+    term: 'Sigma level',
+    plain:
+      'A single score for how defect-free a process is. 3 sigma ≈ 66,800 DPMO (fails about 7% of the time); 6 sigma ≈ 3.4 DPMO. Most published tables include a 1.5 shift, so always say whether yours does.',
+  },
+  rty: {
+    id: 'rty',
+    term: 'Rolled throughput yield (RTY)',
+    plain:
+      'The share of units that get through every single step with no rework and no scrap. Step yields multiply, so nine steps at 95% each land near 63%.',
+  },
+  'hidden factory': {
+    id: 'hidden-factory',
+    term: 'Hidden factory',
+    plain:
+      'The rework and touch-ups absorbed at each station that never show up on the final report. Rolled throughput yield is what exposes it.',
+  },
+  'attribute data': {
+    id: 'attribute-data',
+    term: 'Attribute data',
+    plain:
+      'Counted data instead of measured: pass/fail tallies, defect counts, go/no-go checks. Cheaper to collect but carries far less information, so it needs bigger samples.',
+  },
+  'p chart': {
+    id: 'p-chart',
+    term: 'p chart (share that failed)',
+    plain:
+      'A control chart of the percent of each sample that failed. Handles changing sample sizes by widening the limits when you inspected less.',
+  },
+  'u chart': {
+    id: 'u-chart',
+    term: 'u chart (defects per unit)',
+    plain:
+      'A control chart of defects divided by how much you inspected. Use it when a single piece can carry several defects and the inspected amount moves around.',
+  },
+  proportion: {
+    id: 'proportion',
+    term: 'Proportion (rate)',
+    plain:
+      'The share that failed — bad pieces divided by pieces inspected. Reported as a percent, tested with a rate test rather than a t-test.',
+  },
+  'chi-square': {
+    id: 'chi-square',
+    term: 'Chi-square test',
+    plain:
+      'Compares what you counted against what you would expect if the group made no difference. Answers “do these groups fail for different reasons?” — not just “do they fail more often?”',
+  },
   'distribution shape': {
     id: 'distribution-shape',
     term: 'Distribution shape',
     plain:
       'How values pile up on a histogram: bell-shaped, skewed (long tail), flat, or two humps (often mixed groups). Shape guides which “typical” number to trust.',
+  },
+  'takt time': {
+    id: 'takt-time',
+    term: 'Takt time',
+    plain:
+      'The customer’s drumbeat: available running time divided by how many pieces the customer wants. If takt is 54 seconds, one good piece has to finish every 54 seconds — it is set by demand, not by how fast the machine can go.',
+  },
+  'cycle time': {
+    id: 'cycle-time',
+    term: 'Cycle time',
+    plain:
+      'How long one station actually needs to finish one piece. Compare it to takt: shorter than takt means the station can keep up, longer means it cannot.',
+  },
+  'line balance': {
+    id: 'line-balance',
+    term: 'Line balance / imbalance %',
+    plain:
+      'How evenly the work is spread across stations. Total work divided by (stations × slowest station) is the balance score; the leftover percent is imbalance — people standing and waiting on the bottleneck.',
+  },
+  bottleneck: {
+    id: 'bottleneck',
+    term: 'Bottleneck (constraint)',
+    plain:
+      'The slowest step. The whole line can only go as fast as this one station, so improving anything else just builds a bigger pile in front of it.',
+  },
+  "little's law": {
+    id: 'littles-law',
+    term: 'Little’s Law',
+    plain:
+      'WIP ≈ throughput × lead time. Know any two and you can work out the third. The practical lesson: start fewer jobs at once and lead time drops without anyone working faster.',
+  },
+  'work in process': {
+    id: 'work-in-process',
+    term: 'Work in process (WIP)',
+    plain:
+      'Pieces that have been started but not finished — everything sitting between the first and last step. Extra WIP hides problems and stretches lead time.',
+  },
+  throughput: {
+    id: 'throughput',
+    term: 'Throughput',
+    plain:
+      'Finished good pieces per hour, shift, or day. Started-but-stuck work is inventory, not throughput.',
+  },
+  'lead time': {
+    id: 'lead-time',
+    term: 'Lead time',
+    plain:
+      'How long one piece takes to get all the way through, waiting included: processing + waiting + transport. Usually far longer than the hands-on time.',
+  },
+  smed: {
+    id: 'smed',
+    term: 'SMED (quick changeover)',
+    plain:
+      'Single-Minute Exchange of Dies — cut setup time by moving tasks from “machine stopped” to “machine still running,” then deleting or shortening what is left. The classic target is a stop under ten minutes.',
+  },
+  'internal setup': {
+    id: 'internal-setup',
+    term: 'Internal setup',
+    plain:
+      'Changeover work that can only happen with the machine stopped, such as unbolting a die. Every internal minute is lost production time.',
+  },
+  'external setup': {
+    id: 'external-setup',
+    term: 'External setup',
+    plain:
+      'Changeover work you can do while the machine is still running, such as staging the next die or pre-kitting tools. Basically free time — the goal is to move as much here as possible.',
+  },
+  changeover: {
+    id: 'changeover',
+    term: 'Changeover (make-ready)',
+    plain:
+      'Switching the line from one product to the next. Usually the biggest planned stop in the plant, and the first hour after it is often the scrappiest.',
+  },
+  copq: {
+    id: 'copq',
+    term: 'COPQ (cost of poor quality)',
+    plain:
+      'The money poor quality already cost you: internal failures (scrap, rework, quality downtime) plus external failures (returns, warranty, credits). Reported per month and annualized so it lands in a budget conversation.',
+  },
+  'internal failure cost': {
+    id: 'internal-failure-cost',
+    term: 'Internal failure cost',
+    plain:
+      'Defects you caught yourself — scrap, rework hours, sorting, and line stopped for quality. Painful, but cheaper than letting it ship.',
+  },
+  'external failure cost': {
+    id: 'external-failure-cost',
+    term: 'External failure cost',
+    plain:
+      'Defects the customer caught — returns, warranty, credits, premium freight, lost orders. The same defect costs far more out here than it did on your floor.',
+  },
+  'appraisal cost': {
+    id: 'appraisal-cost',
+    term: 'Appraisal cost',
+    plain:
+      'What you spend checking: inspection labour, testing, audits, gage calibration. Necessary, but inspection never actually makes a part good.',
+  },
+  'prevention cost': {
+    id: 'prevention-cost',
+    term: 'Prevention cost',
+    plain:
+      'What you spend stopping defects up front: training, preventive maintenance, mistake-proofing, standard work, capability studies. Almost always the cheapest dollar in the quality budget.',
   },
 }
 

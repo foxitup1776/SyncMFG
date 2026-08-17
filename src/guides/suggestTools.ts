@@ -76,6 +76,48 @@ export function suggestTools(
     if (/\b(5s|five s|messy|housekeeping|sort|shine)\b/.test(text)) {
       bump('fives', 5, 'Sounds like a 5S audit')
     }
+    if (
+      /\b(how many|sample size|samples do|power analysis|statistical power|enough data|enough samples|plan the study|before we (collect|run))\b/.test(
+        text,
+      )
+    ) {
+      bump('samplesize', 6, 'Sounds like “how many samples do I need?”')
+    }
+    if (/\b(sigma level|dpmo|dpu|defects per (million|unit)|rty|rolled throughput|scorecard)\b/.test(text)) {
+      bump('sigma', 6, 'Sounds like a sigma / DPMO scorecard')
+      bump('yield', 3, 'Yield is the same counts in floor language')
+    }
+    if (
+      /\b(p chart|np chart|c chart|u chart|attribute|defect rate|defectives|pass.?fail|reject rate|scrap rate)\b/.test(
+        text,
+      )
+    ) {
+      bump('attribute', 6, 'Sounds like an attribute control chart')
+    }
+    if (
+      /\b(proportion|percent defective|chi.?square|contingency|defect mix|two rates|rate difference)\b/.test(
+        text,
+      )
+    ) {
+      bump('proportions', 6, 'Sounds like a rate / chi-square test')
+    }
+    if (
+      /\b(takt|pace|customer demand|bottleneck|balance|line balance|wip|work in process|lead time|flow|constraint)\b/.test(
+        text,
+      )
+    ) {
+      bump('takt', 6, 'Sounds like takt / flow math')
+    }
+    if (/\b(smed|changeover|make.?ready|setup time|die swap|quick change)\b/.test(text)) {
+      bump('smed', 6, 'Sounds like a quick-changeover (SMED) study')
+    }
+    if (
+      /\b(cost|money|dollar|\$|copq|warranty|returns|savings|budget|business case|roi)\b/.test(
+        text,
+      )
+    ) {
+      bump('copq', 6, 'Sounds like cost of poor quality')
+    }
   }
 
   // Sensible default starter pack if nothing matched
