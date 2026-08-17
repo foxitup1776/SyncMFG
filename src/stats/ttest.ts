@@ -11,6 +11,22 @@ export interface TTestResult {
   df: number
   pValue: number
   meanDiff: number
+  ciLow: number
+  ciHigh: number
+  se: number
+}
+
+function tCritical(df: number, alpha = 0.05): number {
+  // binary search for t where studentTCdf(t, df) = 1 - alpha/2
+  let lo = 0,
+    hi = 50
+  const target = 1 - alpha / 2
+  for (let i = 0; i < 60; i++) {
+    const mid = (lo + hi) / 2
+    if (studentTCdf(mid, df) < target) lo = mid
+    else hi = mid
+  }
+  return (lo + hi) / 2
 }
 
 /** Welch two-sample t-test (does not assume equal variances). */
@@ -30,6 +46,8 @@ export function welchTTest(a: number[], b: number[]): TTestResult | null {
   const df =
     (v1 + v2) ** 2 / ((v1 * v1) / (n1 - 1) + (v2 * v2) / (n2 - 1))
   const pValue = 2 * (1 - studentTCdf(Math.abs(t), df))
+  const meanDiff = mean1 - mean2
+  const tCrit = tCritical(df)
   return {
     n1,
     n2,
@@ -40,7 +58,10 @@ export function welchTTest(a: number[], b: number[]): TTestResult | null {
     t,
     df,
     pValue,
-    meanDiff: mean1 - mean2,
+    meanDiff,
+    se,
+    ciLow: meanDiff - tCrit * se,
+    ciHigh: meanDiff + tCrit * se,
   }
 }
 

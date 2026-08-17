@@ -9,15 +9,23 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset, listDatasets } from '../storage/datasets'
 import { fmt } from '../stats/descriptive'
+import { interpretPareto } from '../stats/interpretations'
 import { buildPareto } from '../stats/pareto'
 
-export function ParetoTool() {
+export function ParetoTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.pareto.dataset', '')
   const [labelCol, setLabelCol] = usePersistedState('tool.pareto.label', '')
   const [countCol, setCountCol] = usePersistedState('tool.pareto.count', '')
@@ -43,6 +51,16 @@ export function ParetoTool() {
 
   const vital = items.find((i) => i.cumPct >= 80) ?? items[items.length - 1]
   const vitalCount = items.filter((i) => i.cumPct <= 80).length || 1
+
+  const interp = useMemo(() => {
+    if (items.length === 0) return null
+    return interpretPareto({
+      topLabel: items[0].label,
+      topPct: items[0].pct,
+      vitalCount,
+      cumAtVital: vital?.cumPct ?? items[items.length - 1].cumPct,
+    })
+  }, [items, vitalCount, vital])
 
   const report: AnalysisReport | null = useMemo(() => {
     if (!dataset || items.length === 0) return null
@@ -70,6 +88,12 @@ export function ParetoTool() {
           Find the vital few defects or delays. Use a category column, and
           optionally a count column.
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Need a category column (defect type, delay reason) and optionally a
+            count column. Or one column of repeated labels — we count frequency.
+          </p>
+        ) : null}
         <div className="field-grid">
           <div>
             <label htmlFor="pareto-ds">Dataset</label>
@@ -126,6 +150,19 @@ export function ParetoTool() {
 
       {items.length > 0 ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              <NextStepCta
+                label="Open Fishbone for top bar"
+                view="fishbone"
+                onNavigate={onNavigate}
+              />
+            </InterpretBanner>
+          ) : null}
           <div className="chart-card">
             <h3>Pareto</h3>
             <p className="chart-caption">

@@ -106,5 +106,65 @@ export function installSampleDatasets(): string[] {
   })
   names.push('Sample: Gage R&R')
 
+  saveDataset({
+    id: 'sample-before-after',
+    name: 'Sample: Before vs After weights',
+    source: 'csv',
+    table: {
+      headers: ['Before', 'After'],
+      rows: [
+        [51.2, 50.1],
+        [51.0, 49.9],
+        [51.5, 50.3],
+        [50.8, 50.0],
+        [51.3, 49.8],
+        [51.1, 50.2],
+        [50.9, 50.1],
+        [51.4, 49.7],
+        [51.0, 50.4],
+        [51.2, 50.0],
+      ],
+    },
+  })
+  names.push('Sample: Before vs After weights')
+
+  saveDataset({
+    id: 'sample-yield-by-period',
+    name: 'Sample: Yield by period',
+    source: 'csv',
+    table: {
+      headers: ['Period', 'Good', 'Total'],
+      rows: [
+        ['Startup / first hour', 82, 100],
+        ['Steady run', 873, 900],
+      ],
+    },
+  })
+  names.push('Sample: Yield by period')
+
+  saveDataset({
+    id: 'sample-attribute-defects',
+    name: 'Sample: Daily defectives (attribute)',
+    source: 'csv',
+    table: {
+      headers: ['Day', 'Defectives', 'Inspected'],
+      rows: [
+        [1, 4, 100],
+        [2, 6, 100],
+        [3, 3, 100],
+        [4, 5, 100],
+        [5, 12, 100],
+        [6, 4, 100],
+        [7, 3, 100],
+        [8, 5, 100],
+        [9, 7, 100],
+        [10, 4, 100],
+        [11, 2, 100],
+        [12, 6, 100],
+      ],
+    },
+  })
+  names.push('Sample: Daily defectives (attribute)')
+
   return names
 }

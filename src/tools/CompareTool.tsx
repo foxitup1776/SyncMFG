@@ -1,4 +1,9 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { BoxPlotChart } from '../components/charts/StatCharts'
@@ -8,7 +13,9 @@ import { getDataset, listDatasets } from '../storage/datasets'
 import { numericColumn, numericColumnNames } from '../stats/column'
 import { fmt, mean, median, quartiles, sampleStdDev } from '../stats/descriptive'
 
-export function CompareTool() {
+export function CompareTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.compare.dataset', '')
   const [selected, setSelected] = usePersistedState<string[]>(
     'tool.compare.cols',
@@ -76,6 +83,12 @@ export function CompareTool() {
           Pick two or more numeric columns (shifts, suppliers, lines) and compare
           their box plots.
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Need two or more numeric columns (one per group). Paste under Data,
+            then check the columns to compare.
+          </p>
+        ) : null}
         <label>Dataset</label>
         <select
           value={datasetId}
@@ -111,6 +124,21 @@ export function CompareTool() {
 
       {boxes.length >= 2 ? (
         <>
+          <InterpretBanner
+            title="Eyeball first — then prove"
+            plain={`You compared ${boxes.length} groups by eye. If the middles look different, prove it with a formal test next.`}
+            meta="Two columns → t-test. Three or more → ANOVA."
+          >
+            <NextStepCta
+              label={
+                boxes.length === 2
+                  ? 'Open two-group test'
+                  : 'Open multi-group test (ANOVA)'
+              }
+              view={boxes.length === 2 ? 'ttest' : 'anova'}
+              onNavigate={onNavigate}
+            />
+          </InterpretBanner>
           <div className="chart-grid">
             {boxes.map((b) => (
               <div key={b.name}>

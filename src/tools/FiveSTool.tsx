@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
@@ -20,9 +21,15 @@ const EMPTY: Scores = {
   sustain: null,
 }
 
-export function FiveSTool() {
+export function FiveSTool({
+  onNavigate: _onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [area, setArea] = usePersistedState('tool.fives.area', '')
   const [notes, setNotes] = usePersistedState('tool.fives.notes', '')
+  const [reAuditDue, setReAuditDue] = usePersistedState(
+    'tool.fives.reaudit',
+    '',
+  )
   const [scores, setScores] = usePersistedState<Scores>('tool.fives.scores', EMPTY)
 
   const filled = FIVE_S_AREAS.filter((a) => scores[a.id] != null)
@@ -38,7 +45,7 @@ export function FiveSTool() {
       .sort((a, b) => (scores[a.id]! as number) - (scores[b.id]! as number))[0]
     return {
       title: `5S audit — ${area.trim() || 'workplace'}`,
-      summary: `Scored ${filled.length}/5 pillars. Average ≈ ${fmt(avg, 1)} / 5. Weakest right now: ${weakest.name} (${scores[weakest.id]}/5 — ${SCORE_LABELS[scores[weakest.id] as FiveSScore]}).`,
+      summary: `Scored ${filled.length}/5 pillars. Average ≈ ${fmt(avg, 1)} / 5. Weakest right now: ${weakest.name} (${scores[weakest.id]}/5 — ${SCORE_LABELS[scores[weakest.id] as FiveSScore]}).${reAuditDue ? ` Re-audit due ${reAuditDue}.` : ''}`,
       bullets: [
         ...FIVE_S_AREAS.map((a) => {
           const sc = scores[a.id]
@@ -49,11 +56,13 @@ export function FiveSTool() {
         weakest
           ? `Focus first on “${weakest.name}”: ${weakest.tips.join(' · ')}.`
           : '',
-        'Sustain is where audits die — schedule a quick re-check next week.',
+        reAuditDue
+          ? `Re-audit scheduled for ${reAuditDue}.`
+          : 'Sustain is where audits die — schedule a quick re-check next week.',
       ].filter(Boolean),
       termsUsed: ['5s', 'gemba', 'eight wastes'],
     }
-  }, [filled.length, scores, area, avg])
+  }, [filled.length, scores, area, avg, reAuditDue])
 
   return (
     <div className="tool-view">
@@ -70,6 +79,14 @@ export function FiveSTool() {
             value={area}
             onChange={(e) => setArea(e.target.value)}
             placeholder="e.g. Wrapper station"
+          />
+        </label>
+        <label>
+          Re-audit due
+          <input
+            type="date"
+            value={typeof reAuditDue === 'string' ? reAuditDue : ''}
+            onChange={(e) => setReAuditDue(e.target.value)}
           />
         </label>
       </section>
@@ -123,6 +140,25 @@ export function FiveSTool() {
             placeholder="Red-tag list, owners, due dates…"
           />
         </label>
+        {filled.length > 0 ? (
+          <div className="score-bars" aria-label="5S score bars">
+            {FIVE_S_AREAS.filter((a) => scores[a.id] != null).map((a) => {
+              const sc = scores[a.id] as number
+              return (
+                <div key={a.id} className="score-bar-row">
+                  <span>{a.name.split(' ')[0]}</span>
+                  <div className="score-bar-track">
+                    <div
+                      className="score-bar-fill"
+                      style={{ width: `${(sc / 5) * 100}%` }}
+                    />
+                  </div>
+                  <span>{sc}/5</span>
+                </div>
+              )
+            })}
+          </div>
+        ) : null}
         {avg != null ? (
           <div className="stat-strip">
             <div>
@@ -135,6 +171,12 @@ export function FiveSTool() {
                 {filled.length} / {FIVE_S_AREAS.length}
               </strong>
             </div>
+            {reAuditDue ? (
+              <div>
+                <span>Re-audit</span>
+                <strong>{reAuditDue}</strong>
+              </div>
+            ) : null}
           </div>
         ) : null}
       </section>

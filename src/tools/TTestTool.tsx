@@ -1,5 +1,10 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
 import { DatasetPicker } from '../components/DatasetPicker'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { BoxPlotChart } from '../components/charts/StatCharts'
@@ -8,9 +13,12 @@ import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset } from '../storage/datasets'
 import { numericColumn, numericColumnNames } from '../stats/column'
 import { fmt, quartiles } from '../stats/descriptive'
+import { interpretTTest } from '../stats/interpretations'
 import { welchTTest } from '../stats/ttest'
 
-export function TTestTool() {
+export function TTestTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.ttest.dataset', '')
   const [colA, setColA] = usePersistedState('tool.ttest.a', '')
   const [colB, setColB] = usePersistedState('tool.ttest.b', '')
@@ -23,6 +31,21 @@ export function TTestTool() {
   const boxA = useMemo(() => quartiles(a), [a])
   const boxB = useMemo(() => quartiles(b), [b])
 
+  const interp = useMemo(
+    () =>
+      result
+        ? interpretTTest({
+            pValue: result.pValue,
+            meanDiff: result.meanDiff,
+            ciLow: result.ciLow,
+            ciHigh: result.ciHigh,
+            labelA: colA,
+            labelB: colB,
+          })
+        : null,
+    [result, colA, colB],
+  )
+
   const report: AnalysisReport | null = useMemo(() => {
     if (!result || !dataset) return null
     const significant = result.pValue < 0.05
@@ -33,7 +56,7 @@ export function TTestTool() {
         : `We do not yet have strong proof that “${colA}” and “${colB}” truly differ. Chance this gap is just luck: ${fmt(result.pValue, 4)} (above 0.05).`,
       bullets: [
         `Average ${colA} = ${fmt(result.mean1)} (${result.n1} values). Average ${colB} = ${fmt(result.mean2)} (${result.n2} values).`,
-        `Gap (A minus B) = ${fmt(result.meanDiff)}.`,
+        `Gap (A minus B) = ${fmt(result.meanDiff)}. 95% CI: ${fmt(result.ciLow)} to ${fmt(result.ciHigh)}.`,
         `The math score behind this (t-statistic) is ${fmt(result.t, 3)}.`,
         significant
           ? 'Plain takeaway: treat this as a real difference and dig into why.'
@@ -52,6 +75,12 @@ export function TTestTool() {
           Pick two columns (Oven A vs Oven B, Shift 1 vs Shift 2). We’ll tell you
           if the gap looks real or like luck.
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Need two numeric columns side by side (group A and group B). Paste
+            under Data, then pick both columns here.
+          </p>
+        ) : null}
         <DatasetPicker
           datasetId={datasetId}
           column={colA}
@@ -84,6 +113,21 @@ export function TTestTool() {
 
       {result && boxA && boxB ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              {result.pValue < 0.05 ? (
+                <NextStepCta
+                  label="Open Fishbone"
+                  view="fishbone"
+                  onNavigate={onNavigate}
+                />
+              ) : null}
+            </InterpretBanner>
+          ) : null}
           <div className="chart-grid">
             <BoxPlotChart box={boxA} />
             <BoxPlotChart box={boxB} />

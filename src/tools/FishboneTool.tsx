@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import type { AppView } from '../components/AppShell'
 import { FishboneDiagram } from '../components/FishboneDiagram'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
@@ -12,6 +13,16 @@ import {
   setActiveProjectId,
 } from '../storage/projects'
 
+/** Empty-state prompts per 6M category. */
+const EMPTY_PROMPTS: Record<string, string> = {
+  'Man (People)': 'Training gap? Staffing? Fatigue? Skill mismatch?',
+  Machine: 'Setup? Wear? Settings drift? Wrong tooling?',
+  Material: 'Wrong lot? Moisture? Supplier change? Contamination?',
+  Method: 'Missing standard? Shortcut? Sequence wrong?',
+  Measurement: 'Gage noise? Wrong gauge? Calibration overdue?',
+  Environment: 'Temp / humidity? Lighting? Crowding? Housekeeping?',
+}
+
 function blankFishbone(): FishboneState {
   return {
     effect: '',
@@ -19,14 +30,34 @@ function blankFishbone(): FishboneState {
   }
 }
 
-export function FishboneTool() {
+function promptFor(category: string): string {
+  return (
+    EMPTY_PROMPTS[category] ??
+    Object.entries(EMPTY_PROMPTS).find(([k]) =>
+      category.toLowerCase().includes(k.toLowerCase().split(' ')[0]!),
+    )?.[1] ??
+    'Possible cause?'
+  )
+}
+
+export function FishboneTool({
+  onNavigate: _onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [projectId, setProjectId] = useState(
     () => getActiveProjectId() ?? listProjects()[0]?.id ?? '',
   )
   const [, bump] = useState(0)
+  const [focusedCategory, setFocusedCategory] = useState<string | null>(null)
+  const boneRefs = useRef<Record<string, HTMLElement | null>>({})
   const projects = listProjects()
   const project = projectId ? getProject(projectId) : undefined
   const fishbone = project?.fishbone ?? blankFishbone()
+
+  useEffect(() => {
+    if (!focusedCategory) return
+    const el = boneRefs.current[focusedCategory]
+    el?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+  }, [focusedCategory])
 
   function update(next: FishboneState) {
     if (!project) return
@@ -124,37 +155,53 @@ export function FishboneTool() {
 
       {project ? (
         <>
-          <FishboneDiagram fishbone={fishbone} />
+          <FishboneDiagram
+            fishbone={fishbone}
+            onBoneClick={(category) => setFocusedCategory(category)}
+          />
 
           <div className="fish-bones">
-            {fishbone.bones.map((bone, bi) => (
-              <section key={bone.category} className="panel bone-card">
-                <h3>{bone.category}</h3>
-                {bone.causes.map((cause, ci) => (
-                  <div key={ci} className="row bone-row">
-                    <input
-                      value={cause}
-                      placeholder="Possible cause"
-                      onChange={(e) => setCause(bi, ci, e.target.value)}
-                    />
-                    <button
-                      type="button"
-                      className="btn ghost danger"
-                      onClick={() => removeCause(bi, ci)}
-                    >
-                      Remove
-                    </button>
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  className="btn secondary"
-                  onClick={() => addCause(bi)}
+            {fishbone.bones.map((bone, bi) => {
+              const empty = bone.causes.length === 0
+              const focused = focusedCategory === bone.category
+              return (
+                <section
+                  key={bone.category}
+                  className={focused ? 'panel bone-card focused' : 'panel bone-card'}
+                  ref={(el) => {
+                    boneRefs.current[bone.category] = el
+                  }}
                 >
-                  Add cause
-                </button>
-              </section>
-            ))}
+                  <h3>{bone.category}</h3>
+                  {empty ? (
+                    <p className="meta">{promptFor(bone.category)}</p>
+                  ) : null}
+                  {bone.causes.map((cause, ci) => (
+                    <div key={ci} className="row bone-row">
+                      <input
+                        value={cause}
+                        placeholder={promptFor(bone.category)}
+                        onChange={(e) => setCause(bi, ci, e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="btn ghost danger"
+                        onClick={() => removeCause(bi, ci)}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    className="btn secondary"
+                    onClick={() => addCause(bi)}
+                  >
+                    Add cause
+                  </button>
+                </section>
+              )
+            })}
           </div>
           {report ? (
             <PlainReport

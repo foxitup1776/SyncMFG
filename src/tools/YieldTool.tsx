@@ -1,16 +1,24 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
 import { fmt } from '../stats/descriptive'
+import { interpretYield } from '../stats/interpretations'
 import { calcYield, calcYieldRows, type YieldRow } from '../stats/yield'
 
 function newRow(partial?: Partial<YieldRow>): YieldRow {
   return { label: '', good: 0, total: 0, ...partial }
 }
 
-export function YieldTool() {
+export function YieldTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [mode, setMode] = usePersistedState<'simple' | 'rows'>(
     'tool.yield.mode',
     'simple',
@@ -45,6 +53,28 @@ export function YieldTool() {
           })
         : null
 
+  const startupFpy =
+    mode === 'rows' && multi.rows.length >= 2 ? multi.rows[0]?.fpyPct : null
+  const steadyFpy =
+    mode === 'rows' && multi.rows.length >= 2
+      ? multi.rows[multi.rows.length - 1]?.fpyPct
+      : null
+
+  const interp = useMemo(
+    () =>
+      overall
+        ? interpretYield({
+            fpyPct: overall.fpyPct,
+            scrapPct: overall.scrapPct,
+            hitTarget: overall.hitTarget,
+            targetFpyPct: overall.targetFpyPct,
+            startupFpy,
+            steadyFpy,
+          })
+        : null,
+    [overall, startupFpy, steadyFpy],
+  )
+
   const report: AnalysisReport | null = useMemo(() => {
     if (!overall) return null
     const targetNote =
@@ -57,8 +87,8 @@ export function YieldTool() {
       mode === 'rows' && multi.rows.length >= 2
         ? `By period: ${multi.rows
             .map((r) => `${r.label || 'Row'} ${fmt(r.fpyPct, 1)}%`)
-            .join(' · ')}. Compare startup vs steady — “Reduced Yield” often hides in the first hour after changeover.`
-        : 'Tip: use “By period” to split startup vs steady run and see where quality loss lands.'
+            .join(' · ')}. Compare startup vs steady — Reduced Yield often hides in the first hour after changeover.`
+        : 'Tip: use By period to split startup vs steady run and see where quality loss lands.'
     return {
       title: 'First-pass yield / scrap',
       summary: `Of ${overall.total.toLocaleString()} pieces, ${overall.good.toLocaleString()} passed the first time. First-pass yield = ${fmt(overall.fpyPct, 1)}%. Scrap/rework rate = ${fmt(overall.scrapPct, 1)}%.`,
@@ -72,6 +102,24 @@ export function YieldTool() {
     }
   }, [overall, mode, multi.rows])
 
+  function fillExample() {
+    setMode('rows')
+    setTargetRaw('98')
+    setGoodRaw('920')
+    setTotalRaw('1000')
+    setRows([
+      newRow({ label: 'Startup / first hour', good: 82, total: 100 }),
+      newRow({ label: 'Steady run', good: 873, total: 900 }),
+    ])
+  }
+
+  const suggestPareto =
+    overall != null &&
+    (overall.hitTarget === false ||
+      (startupFpy != null &&
+        steadyFpy != null &&
+        Math.abs(startupFpy - steadyFpy) >= 5))
+
   return (
     <div className="tool-view">
       <ToolGuidePanel toolId="yield" />
@@ -79,7 +127,7 @@ export function YieldTool() {
         <h2>First-pass yield / scrap</h2>
         <p className="lede">
           How many pieces were good the first time — no rework counted as
-          “good.”
+          good.
         </p>
         <div className="row actions">
           <button
@@ -95,6 +143,9 @@ export function YieldTool() {
             onClick={() => setMode('rows')}
           >
             By period (startup vs run)
+          </button>
+          <button type="button" className="btn secondary" onClick={fillExample}>
+            Fill example
           </button>
         </div>
 
@@ -212,6 +263,21 @@ export function YieldTool() {
 
       {overall ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              {suggestPareto ? (
+                <NextStepCta
+                  label="Open Pareto for scrap reasons"
+                  view="pareto"
+                  onNavigate={onNavigate}
+                />
+              ) : null}
+            </InterpretBanner>
+          ) : null}
           <div className="stat-strip">
             <div>
               <span>First-pass yield</span>

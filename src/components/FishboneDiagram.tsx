@@ -3,7 +3,15 @@ import type { FishboneState } from '../projects/types'
 const COLORS = ['#1a3a3a', '#2f6f6a', '#3d5a80', '#6b4f3a', '#5c6b73', '#4a6741']
 
 /** Visual Ishikawa diagram — spine, head, and angled bones with cause tags. */
-export function FishboneDiagram({ fishbone }: { fishbone: FishboneState }) {
+export function FishboneDiagram({
+  fishbone,
+  focusedCategory,
+  onBoneClick,
+}: {
+  fishbone: FishboneState
+  focusedCategory?: string | null
+  onBoneClick?: (category: string) => void
+}) {
   const bones = fishbone.bones
   const above = bones.filter((_, i) => i % 2 === 0)
   const below = bones.filter((_, i) => i % 2 === 1)
@@ -70,23 +78,50 @@ export function FishboneDiagram({ fishbone }: { fishbone: FishboneState }) {
 
         {[...up, ...down].map(({ bone, joinX, tipX, tipY, color }) => {
           const causes = bone.causes.filter((c) => c.trim())
+          const focused = focusedCategory === bone.category
           return (
-            <g key={bone.category}>
+            <g
+              key={bone.category}
+              className="fish-bone-hit"
+              onClick={() => onBoneClick?.(bone.category)}
+              role={onBoneClick ? 'button' : undefined}
+              tabIndex={onBoneClick ? 0 : undefined}
+              onKeyDown={
+                onBoneClick
+                  ? (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        onBoneClick(bone.category)
+                      }
+                    }
+                  : undefined
+              }
+            >
               <line
                 x1={tipX}
                 y1={tipY}
                 x2={joinX}
                 y2={spineY}
                 stroke={color}
-                strokeWidth="2.5"
+                strokeWidth={focused ? 4 : 2.5}
               />
-              <circle cx={joinX} cy={spineY} r="4" fill={color} />
+              {/* Invisible hit area */}
+              <line
+                x1={tipX}
+                y1={tipY}
+                x2={joinX}
+                y2={spineY}
+                stroke="transparent"
+                strokeWidth="18"
+              />
+              <circle cx={joinX} cy={spineY} r={focused ? 6 : 4} fill={color} />
               <text
                 x={tipX}
                 y={tipY + (tipY < spineY ? -8 : 18)}
                 textAnchor="middle"
                 className="fish-cat"
                 fill={color}
+                fontWeight={focused ? 800 : undefined}
               >
                 {shortCat(bone.category)}
               </text>

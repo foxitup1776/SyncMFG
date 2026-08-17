@@ -62,10 +62,9 @@ export function AttachToProject({
 
   return (
     <section className="attach-panel no-print">
-      <h3>Pin to DMAIC project</h3>
+      <h3>Save into project</h3>
       <p className="lede">
-        Keep this stats result with your problem-solving story (Fishbone, 5 Whys,
-        FMEA, A3).
+        Keep this result with your DMAIC story (Fishbone, 5 Whys, FMEA, A3).
       </p>
       <div className="field-grid">
         <div>
@@ -97,8 +96,8 @@ export function AttachToProject({
           </select>
         </div>
       </div>
-      <button type="button" className="btn secondary" onClick={handleAttach}>
-        Pin this report
+      <button type="button" className="btn primary" onClick={handleAttach}>
+        Save this report into project
       </button>
       {note ? <p className="share-note">{note}</p> : null}
     </section>

@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import type { AppView } from '../components/AppShell'
 import { PATHWAYS, getPathway } from '../guides/pathways'
 import { usePersistedState } from '../hooks/usePersistedState'
@@ -14,10 +14,16 @@ export function PathwaysPage({
     'pathways.selected',
     initialPathwayId ?? '',
   )
+  const detailRef = useRef<HTMLElement | null>(null)
   const selected = useMemo(
     () => (selectedId ? getPathway(selectedId) : undefined),
     [selectedId],
   )
+
+  useEffect(() => {
+    if (!selectedId || !detailRef.current) return
+    detailRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [selectedId])
 
   return (
     <div className="pathways-page">
@@ -48,7 +54,7 @@ export function PathwaysPage({
       </div>
 
       {selected ? (
-        <section className="panel pathway-detail">
+        <section ref={detailRef} className="panel pathway-detail">
           <p className="guide-kicker">Method walkthrough</p>
           <h2>{selected.title}</h2>
           <p className="hero-copy">{selected.floorQuestion}</p>
@@ -79,6 +85,9 @@ export function PathwaysPage({
                     Step {i + 1}: {step.title}
                   </strong>
                   <p>{step.detail}</p>
+                  {step.doneWhen ? (
+                    <p className="meta done-when">{step.doneWhen}</p>
+                  ) : null}
                 </div>
                 {step.toolId ? (
                   <button

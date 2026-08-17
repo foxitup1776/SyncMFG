@@ -440,9 +440,9 @@ export function ProjectsPage({
                 {project.evidence.map((e) => (
                   <li key={e.id}>
                     <div>
-                      <strong>{e.report.title}</strong>
+                      <strong className="evidence-source">{e.sourceTool}</strong>
                       <span className="meta">
-                        {PHASE_LABELS[e.phase]} · {e.sourceTool} ·{' '}
+                        {PHASE_LABELS[e.phase]} ·{' '}
                         {new Date(e.attachedAt).toLocaleString()}
                       </span>
                       <p className="evidence-summary">{e.report.summary}</p>

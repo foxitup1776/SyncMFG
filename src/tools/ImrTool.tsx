@@ -1,5 +1,10 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
 import { DatasetPicker } from '../components/DatasetPicker'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { ControlChart } from '../components/charts/StatCharts'
@@ -9,9 +14,12 @@ import { getDataset } from '../storage/datasets'
 import { numericColumn } from '../stats/column'
 import { fmt } from '../stats/descriptive'
 import { computeImr } from '../stats/imr'
+import { interpretImr } from '../stats/interpretations'
 import { westernElectricHits } from '../stats/westernElectric'
 
-export function ImrTool() {
+export function ImrTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.imr.dataset', '')
   const [column, setColumn] = usePersistedState('tool.imr.column', '')
 
@@ -37,6 +45,24 @@ export function ImrTool() {
     ])
     return [...set]
   }, [imr, we])
+
+  const interp = useMemo(
+    () =>
+      imr
+        ? interpretImr({
+            weHits: we,
+            outOfControlX: imr.outOfControlX,
+            outOfControlMr: imr.outOfControlMr,
+          })
+        : null,
+    [imr, we],
+  )
+
+  const stable =
+    imr != null &&
+    we.length === 0 &&
+    imr.outOfControlX.length === 0 &&
+    imr.outOfControlMr.length === 0
 
   const report: AnalysisReport | null = useMemo(() => {
     if (!imr || !dataset) return null
@@ -82,6 +108,12 @@ export function ImrTool() {
           Stability check for one measurement column, including run-rule alarms
           (not only points outside limits).
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Need one numeric column in time order (individuals). Paste under Data,
+            then pick that measurement here.
+          </p>
+        ) : null}
         <DatasetPicker
           datasetId={datasetId}
           column={column}
@@ -94,6 +126,19 @@ export function ImrTool() {
 
       {imr ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              <NextStepCta
+                label={stable ? 'Open Capability' : 'Open Fishbone'}
+                view={stable ? 'capability' : 'fishbone'}
+                onNavigate={onNavigate}
+              />
+            </InterpretBanner>
+          ) : null}
           <div className="chart-grid">
             <ControlChart
               title="Individuals (I) chart"

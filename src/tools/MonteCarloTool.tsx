@@ -1,10 +1,16 @@
 import { useMemo, useState } from 'react'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { DistributionChart } from '../components/charts/StatCharts'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
 import { fmt } from '../stats/descriptive'
+import { interpretMonteCarlo } from '../stats/interpretations'
 import {
   runTimeStudyMonteCarlo,
   type ProcessStep,
@@ -21,7 +27,9 @@ function newStep(partial?: Partial<ProcessStep>): ProcessStep {
   }
 }
 
-export function MonteCarloTool() {
+export function MonteCarloTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [steps, setSteps] = usePersistedState<ProcessStep[]>('tool.mc.steps', [
     newStep({ name: 'Load', min: 8, typical: 10, max: 15 }),
     newStep({ name: 'Cycle', min: 20, typical: 25, max: 35 }),
@@ -42,6 +50,19 @@ export function MonteCarloTool() {
       target !== null && Number.isFinite(target) ? target : null,
     )
   }, [steps, trials, target, seedRun])
+
+  const interp = useMemo(
+    () =>
+      result
+        ? interpretMonteCarlo({
+            median: result.median,
+            p95: result.p95,
+            hitTargetPct: result.hitTargetPct,
+            target: target !== null && Number.isFinite(target) ? target : null,
+          })
+        : null,
+    [result, target],
+  )
 
   const report: AnalysisReport | null = useMemo(() => {
     if (!result) return null
@@ -196,6 +217,19 @@ export function MonteCarloTool() {
 
       {result ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              <NextStepCta
+                label="Save into project"
+                view="projects"
+                onNavigate={onNavigate}
+              />
+            </InterpretBanner>
+          ) : null}
           <div className="stat-strip">
             <div>
               <span>Median</span>

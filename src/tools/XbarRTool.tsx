@@ -1,4 +1,9 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { ControlChart } from '../components/charts/StatCharts'
@@ -6,6 +11,7 @@ import type { AnalysisReport, CellValue } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset, listDatasets } from '../storage/datasets'
 import { fmt } from '../stats/descriptive'
+import { interpretXbarR } from '../stats/interpretations'
 import { computeXbarR } from '../stats/xbarR'
 
 function rowToNumbers(row: CellValue[]): number[] {
@@ -14,7 +20,9 @@ function rowToNumbers(row: CellValue[]): number[] {
     .filter((n) => Number.isFinite(n))
 }
 
-export function XbarRTool() {
+export function XbarRTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.xbarr.dataset', '')
   const datasets = listDatasets()
   const dataset = datasetId ? getDataset(datasetId) : undefined
@@ -24,6 +32,17 @@ export function XbarRTool() {
     const subgroups = dataset.table.rows.map(rowToNumbers)
     return computeXbarR(subgroups)
   }, [dataset])
+
+  const interp = useMemo(
+    () =>
+      result
+        ? interpretXbarR({ outX: result.outX, outR: result.outR })
+        : null,
+    [result],
+  )
+
+  const stable =
+    result != null && result.outX.length === 0 && result.outR.length === 0
 
   const report: AnalysisReport | null = useMemo(() => {
     if (!result || !dataset) return null
@@ -53,6 +72,12 @@ export function XbarRTool() {
           For data already in subgroups: each row = one sample group, columns =
           the pieces in that group (size 2–10).
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Each row should be one subgroup with 2–10 numeric pieces as columns
+            (e.g. five cookies weighed each hour). Load that table under Data.
+          </p>
+        ) : null}
         <label htmlFor="xbarr-ds">Dataset</label>
         <select
           id="xbarr-ds"
@@ -70,6 +95,19 @@ export function XbarRTool() {
 
       {result ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              <NextStepCta
+                label={stable ? 'Open Capability' : 'Open Fishbone'}
+                view={stable ? 'capability' : 'fishbone'}
+                onNavigate={onNavigate}
+              />
+            </InterpretBanner>
+          ) : null}
           <div className="chart-grid">
             <ControlChart
               title="X̄ chart"

@@ -720,6 +720,7 @@ select {
 
 .fishbone-diagram {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 0.5rem;
 }
 
@@ -752,12 +753,12 @@ select {
 }
 
 .fish-cat {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 700;
 }
 
 .fish-cause {
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .bone-row {
@@ -771,6 +772,47 @@ select {
 .interpret-banner p {
   margin: 0.35rem 0;
   color: var(--ink-soft);
+}
+
+.pathway-suggest-card {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.score-bars {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.75rem 0;
+}
+
+.score-bar-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr 2.5rem;
+  gap: 0.5rem;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.score-bar-track {
+  height: 0.55rem;
+  background: #e4eceb;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.score-bar-fill {
+  height: 100%;
+  background: var(--teal);
+  border-radius: 4px;
+}
+
+.bone-card.focused {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.fish-bone-hit {
+  cursor: pointer;
 }
 
 .waste-chip-grid {
@@ -980,6 +1022,12 @@ select {
   color: var(--ink-soft);
   margin: 0.35rem 0 0;
   font-size: 0.95rem;
+}
+
+.evidence-source {
+  display: block;
+  font-size: 1.05rem;
+  margin-bottom: 0.15rem;
 }
 
 .analyze-snapshot {
@@ -1340,7 +1388,8 @@ button.linkish {
 
   .panel,
   .chart-card,
-  .plain-report {
+  .plain-report,
+  .interpret-banner {
     box-shadow: none !important;
     break-inside: avoid;
   }

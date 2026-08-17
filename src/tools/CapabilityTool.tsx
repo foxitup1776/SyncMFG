@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
 import { DatasetPicker } from '../components/DatasetPicker'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
@@ -18,7 +19,9 @@ function parseOptional(raw: string): number | null {
   return Number.isFinite(n) ? n : null
 }
 
-export function CapabilityTool() {
+export function CapabilityTool({
+  onNavigate: _onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.cap.dataset', '')
   const [column, setColumn] = usePersistedState('tool.cap.column', '')
   const [uslRaw, setUslRaw] = usePersistedState('tool.cap.usl', '')

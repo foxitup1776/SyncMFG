@@ -90,62 +90,62 @@ export default function App() {
       {view === 'settings' ? <SettingsPage /> : null}
       {view === 'visual' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <VisualTool />
+          <VisualTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'imr' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <ImrTool />
+          <ImrTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'capability' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <CapabilityTool />
+          <CapabilityTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'montecarlo' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <MonteCarloTool />
+          <MonteCarloTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'pareto' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <ParetoTool />
+          <ParetoTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'ttest' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <TTestTool />
+          <TTestTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'anova' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <AnovaTool />
+          <AnovaTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'regression' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <RegressionTool />
+          <RegressionTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'xbarr' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <XbarRTool />
+          <XbarRTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'gage' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <GageRrTool />
+          <GageRrTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'compare' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <CompareTool />
+          <CompareTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'fishbone' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <FishboneTool />
+          <FishboneTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'fivewhys' ? (
@@ -160,27 +160,27 @@ export default function App() {
       ) : null}
       {view === 'yield' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <YieldTool />
+          <YieldTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'oee' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <OeeTool />
+          <OeeTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'beforeafter' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <BeforeAfterTool />
+          <BeforeAfterTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'wastewalk' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <WasteWalkTool />
+          <WasteWalkTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
       {view === 'fives' ? (
         <ToolFrame onBack={() => setView('tools')}>
-          <FiveSTool />
+          <FiveSTool onNavigate={setView} />
         </ToolFrame>
       ) : null}
     </AppShell>

@@ -1,4 +1,9 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { BoxPlotChart } from '../components/charts/StatCharts'
@@ -7,9 +12,12 @@ import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset, listDatasets } from '../storage/datasets'
 import { numericColumn, numericColumnNames } from '../stats/column'
 import { fmt, mean, quartiles } from '../stats/descriptive'
+import { interpretTTest } from '../stats/interpretations'
 import { welchTTest } from '../stats/ttest'
 
-export function BeforeAfterTool() {
+export function BeforeAfterTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState(
     'tool.beforeafter.dataset',
     '',
@@ -40,6 +48,27 @@ export function BeforeAfterTool() {
   const meanBefore = useMemo(() => mean(before), [before])
   const meanAfter = useMemo(() => mean(after), [after])
 
+  const interp = useMemo(
+    () =>
+      result
+        ? interpretTTest({
+            pValue: result.pValue,
+            meanDiff: result.meanDiff,
+            ciLow: result.ciLow,
+            ciHigh: result.ciHigh,
+            labelA: colBefore || 'Before',
+            labelB: colAfter || 'After',
+          })
+        : null,
+    [result, colBefore, colAfter],
+  )
+
+  const significantWin = useMemo(() => {
+    if (!result || meanBefore == null || meanAfter == null) return false
+    if (result.pValue >= 0.05) return false
+    return wantLower ? meanAfter < meanBefore : meanAfter > meanBefore
+  }, [result, meanBefore, meanAfter, wantLower])
+
   const report: AnalysisReport | null = useMemo(() => {
     if (!result || !dataset || meanBefore == null || meanAfter == null) {
       return null
@@ -66,7 +95,7 @@ export function BeforeAfterTool() {
       summary,
       bullets: [
         `Before average ${fmt(meanBefore)} (n=${result.n1}). After average ${fmt(meanAfter)} (n=${result.n2}).`,
-        `Change (after − before) = ${fmt(delta)}${pct != null ? ` (~${fmt(pct, 1)}% of the before level)` : ''}.`,
+        `Change (after − before) = ${fmt(delta)}${pct != null ? ` (~${fmt(pct, 1)}% of the before level)` : ''}. 95% CI for Before−After gap: ${fmt(result.ciLow)} to ${fmt(result.ciHigh)}.`,
         wantLower
           ? 'Goal set: lower is better (scrap, time, defects, weight overage…).'
           : 'Goal set: higher is better (yield, uptime, capability…).',
@@ -96,6 +125,12 @@ export function BeforeAfterTool() {
           Compare a Before column to an After column. Same idea as “are two
           groups different,” framed for improvement checks.
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Need two numeric columns named like Before and After (or old vs new
+            samples). Paste under Data, then pick both here.
+          </p>
+        ) : null}
         <label>
           Dataset
           <select
@@ -171,6 +206,21 @@ export function BeforeAfterTool() {
 
       {result && boxBefore && boxAfter ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              {significantWin ? (
+                <NextStepCta
+                  label="Open I-MR on After"
+                  view="imr"
+                  onNavigate={onNavigate}
+                />
+              ) : null}
+            </InterpretBanner>
+          ) : null}
           <div className="stat-strip">
             <div>
               <span>Before avg</span>

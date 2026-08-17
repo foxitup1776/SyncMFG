@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import type { AppView } from '../components/AppShell'
 import { pathwaysForSituations } from '../guides/pathways'
 import { suggestTools } from '../guides/suggestTools'
-import { SITUATIONS } from '../guides/toolGuides'
+import { getToolGuide, SITUATIONS } from '../guides/toolGuides'
 import { usePersistedState } from '../hooks/usePersistedState'
 import {
   createProject,
@@ -137,28 +137,42 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
             Visual pathways with teaching-note quotes and step-by-step tools.
           </p>
           <div className="pathway-grid compact">
-            {pathwayHits.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                className="pathway-tile"
-                onClick={() => {
-                  try {
-                    localStorage.setItem(
-                      'pathways.selected',
-                      JSON.stringify(p.id),
-                    )
-                  } catch {
-                    /* ignore */
-                  }
-                  onNavigate('tools')
-                }}
-              >
-                <span className="pathway-short">{p.shortLabel}</span>
-                <strong>{p.title}</strong>
-                <span className="pathway-sub">{p.subtitle}</span>
-              </button>
-            ))}
+            {pathwayHits.map((p) => {
+              const firstTool = p.steps.find((s) => s.toolId)?.toolId
+              const firstGuide = firstTool ? getToolGuide(firstTool) : undefined
+              return (
+                <div key={p.id} className="pathway-suggest-card">
+                  <button
+                    type="button"
+                    className="pathway-tile"
+                    onClick={() => {
+                      try {
+                        localStorage.setItem(
+                          'pathways.selected',
+                          JSON.stringify(p.id),
+                        )
+                      } catch {
+                        /* ignore */
+                      }
+                      onNavigate('tools')
+                    }}
+                  >
+                    <span className="pathway-short">{p.shortLabel}</span>
+                    <strong>{p.title}</strong>
+                    <span className="pathway-sub">{p.subtitle}</span>
+                  </button>
+                  {firstTool ? (
+                    <button
+                      type="button"
+                      className="btn secondary"
+                      onClick={() => onNavigate(firstTool)}
+                    >
+                      Open {firstGuide?.plainName ?? 'first tool'}
+                    </button>
+                  ) : null}
+                </div>
+              )
+            })}
           </div>
         </section>
       ) : null}

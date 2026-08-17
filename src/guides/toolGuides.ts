@@ -61,6 +61,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
     ],
     keywords: ['excel', 'csv', 'upload', 'paste', 'data', 'table'],
     phase: 'data',
+    quotes: [
+      {
+        text: 'Go to the Gemba — bring the real numbers from the floor into one place before you argue about causes.',
+        source: 'Lean · Gemba',
+      },
+    ],
   },
   {
     id: 'visual',
@@ -117,6 +123,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
       'side by side',
     ],
     phase: 'analyze',
+    quotes: [
+      {
+        text: 'Before you run a formal test, put the groups side by side. Your eyes often spot the story the p-value will later confirm.',
+        source: 'Maths · Descriptive Statistics',
+      },
+    ],
   },
   {
     id: 'imr',
@@ -162,6 +174,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
     ],
     keywords: ['subgroup', 'batch', 'xbar', 'x-bar', 'sample of'],
     phase: 'measure',
+    quotes: [
+      {
+        text: 'X-bar and R charts monitor subgroup averages and within-subgroup range so you can see level shifts separately from consistency problems.',
+        source: 'Maths · Statistical Process Control',
+      },
+    ],
   },
   {
     id: 'capability',
@@ -441,6 +459,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
     ],
     keywords: ['root cause', '5 why', 'five why', 'symptom', 'deeper'],
     phase: 'analyze',
+    quotes: [
+      {
+        text: 'Ask why repeatedly until you land on a cause you can change — then validate it with data, not opinion alone.',
+        source: 'Lean · Problem Solving',
+      },
+    ],
   },
   {
     id: 'fmea',
@@ -455,6 +479,12 @@ export const TOOL_GUIDES: ToolGuide[] = [
     ],
     keywords: ['fmea', 'risk', 'failure', 'prevent', 'rpn', 'severity'],
     phase: 'analyze',
+    quotes: [
+      {
+        text: 'Severity × Occurrence × Detection ranks what to prevent first — not every scary failure is the highest priority.',
+        source: 'Six Sigma · FMEA',
+      },
+    ],
   },
   {
     id: 'yield',

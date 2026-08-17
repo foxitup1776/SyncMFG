@@ -1,5 +1,10 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
 import { DatasetPicker } from '../components/DatasetPicker'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import {
@@ -20,8 +25,11 @@ import {
   sampleStdDev,
 } from '../stats/descriptive'
 import { readDistributionShape } from '../stats/distributionShape'
+import { looksJumpy } from '../stats/interpretations'
 
-export function VisualTool() {
+export function VisualTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.visual.dataset', '')
   const [column, setColumn] = usePersistedState('tool.visual.column', '')
 
@@ -35,6 +43,9 @@ export function VisualTool() {
   const bins = useMemo(() => histogramBins(values), [values])
 
   const shape = useMemo(() => readDistributionShape(values), [values])
+  const jumpy = useMemo(() => looksJumpy(values), [values])
+  const suggestImr =
+    jumpy || shape?.kind === 'two-humps'
 
   const report: AnalysisReport | null = useMemo(() => {
     if (values.length < 2 || !box || !dataset) return null
@@ -86,6 +97,12 @@ export function VisualTool() {
           First look at one measurement column — shape, middle, outliers, and
           order.
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Paste one numeric measurement column (weights, times, temps) in time
+            order. Pick that column after you load a dataset under Data.
+          </p>
+        ) : null}
         <DatasetPicker
           datasetId={datasetId}
           column={column}
@@ -99,12 +116,19 @@ export function VisualTool() {
       {values.length >= 2 && box ? (
         <>
           {shape ? (
-            <section className="panel soft interpret-banner">
-              <p className="guide-kicker">Chart interpretation</p>
-              <h3>{shape.label}</h3>
-              <p>{shape.plain}</p>
-              <p className="meta">{shape.skewHint}</p>
-            </section>
+            <InterpretBanner
+              title={shape.label}
+              plain={shape.plain}
+              meta={shape.skewHint}
+            >
+              {suggestImr ? (
+                <NextStepCta
+                  label="Open I-MR"
+                  view="imr"
+                  onNavigate={onNavigate}
+                />
+              ) : null}
+            </InterpretBanner>
           ) : null}
           <div className="chart-grid">
             <HistogramChart bins={bins} />

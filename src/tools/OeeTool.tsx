@@ -1,9 +1,15 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
 import { usePersistedState } from '../hooks/usePersistedState'
 import { fmt } from '../stats/descriptive'
+import { interpretOee } from '../stats/interpretations'
 import { calcOee } from '../stats/oee'
 
 const WEAK_LABEL = {
@@ -12,7 +18,9 @@ const WEAK_LABEL = {
   quality: 'Quality (scrap / rework hurting first-pass yield)',
 } as const
 
-export function OeeTool() {
+export function OeeTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [planned, setPlanned] = usePersistedState('tool.oee.planned', '480')
   const [downtime, setDowntime] = usePersistedState('tool.oee.down', '60')
   const [ideal, setIdeal] = usePersistedState('tool.oee.ideal', '0.5')
@@ -30,6 +38,20 @@ export function OeeTool() {
         goodPieces: Number(goodPcs),
       }),
     [planned, downtime, ideal, totalPcs, goodPcs],
+  )
+
+  const interp = useMemo(
+    () =>
+      result
+        ? interpretOee({
+            oeePct: result.oeePct,
+            weakest: result.weakest,
+            availabilityPct: result.availabilityPct,
+            performancePct: result.performancePct,
+            qualityPct: result.qualityPct,
+          })
+        : null,
+    [result],
   )
 
   const report: AnalysisReport | null = useMemo(() => {
@@ -51,6 +73,15 @@ export function OeeTool() {
     }
   }, [result, unit])
 
+  function fillExample() {
+    setUnit('minutes')
+    setPlanned('480')
+    setDowntime('60')
+    setIdeal('0.5')
+    setTotalPcs('700')
+    setGoodPcs('665')
+  }
+
   return (
     <div className="tool-view">
       <ToolGuidePanel toolId="oee" />
@@ -60,14 +91,24 @@ export function OeeTool() {
           Three scores multiplied: were we running, were we at speed, were pieces
           good the first time?
         </p>
+        <div className="row actions">
+          <button type="button" className="btn secondary" onClick={fillExample}>
+            Fill example
+          </button>
+        </div>
         <label>
-          Time unit (label only — keep numbers consistent)
+          Time unit (label only — keep every time field in the same unit)
           <select value={unit} onChange={(e) => setUnit(e.target.value)}>
             <option value="minutes">Minutes</option>
             <option value="hours">Hours</option>
             <option value="seconds">Seconds</option>
           </select>
         </label>
+        <p className="meta">
+          Example: an 8-hour shift = 480 minutes. Ideal cycle is minutes per
+          good piece at design speed (e.g. 0.5 min/pc). Planned, downtime, and
+          ideal cycle must all use “{unit}”.
+        </p>
         <div className="form-grid">
           <label>
             Planned time ({unit})
@@ -120,6 +161,23 @@ export function OeeTool() {
 
       {result ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              <NextStepCta
+                label={
+                  result.weakest === 'quality'
+                    ? 'Open Yield / FPY'
+                    : 'Open Pareto'
+                }
+                view={result.weakest === 'quality' ? 'yield' : 'pareto'}
+                onNavigate={onNavigate}
+              />
+            </InterpretBanner>
+          ) : null}
           <div className="stat-strip">
             <div>
               <span>OEE</span>

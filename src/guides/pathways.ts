@@ -8,6 +8,8 @@ export interface PathwayQuote {
 export interface PathwayStep {
   title: string
   detail: string
+  /** One-line success criteria — "You are done when…" */
+  doneWhen?: string
   toolId?: AppView
 }
 
@@ -56,16 +58,19 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Bring numbers in',
         detail: 'Paste Excel or upload CSV/XLSX so the app can read your columns.',
+        doneWhen: 'You are done when the dataset preview looks right and the table is saved.',
         toolId: 'data',
       },
       {
         title: 'See shape, middle, and order',
         detail: 'Use histogram (photo), box plot (middle 50% + outliers), and run chart (movie).',
+        doneWhen: 'You are done when the histogram and run chart are readable and you noted outliers.',
         toolId: 'visual',
       },
       {
         title: 'Compare groups by eye',
         detail: 'If you have shifts or suppliers in separate columns, compare box plots side by side.',
+        doneWhen: 'You are done when side-by-side boxes show which groups look different.',
         toolId: 'compare',
       },
     ],
@@ -98,16 +103,19 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'One measurement stream',
         detail: 'Use I-MR when you paste one column in time order (individuals).',
+        doneWhen: 'You are done when you can say stable vs special-cause from the I-MR chart.',
         toolId: 'imr',
       },
       {
         title: 'Already in subgroups?',
         detail: 'If each Excel row is a batch of 2–10 pieces, use X̄-R instead.',
+        doneWhen: 'You are done when X̄ and R charts are reviewed and out-of-control subgroups noted.',
         toolId: 'xbarr',
       },
       {
         title: 'Then check customer fit',
         detail: 'Only after stability looks OK, ask whether you hit specs.',
+        doneWhen: 'You are done when you only open capability after stability looks OK.',
         toolId: 'capability',
       },
     ],
@@ -144,11 +152,13 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Confirm stability',
         detail: 'Run a control chart so you are not scoring a moving target.',
+        doneWhen: 'You are done when the control chart no longer shows unexplained special causes.',
         toolId: 'imr',
       },
       {
         title: 'Score against specs',
         detail: 'Enter LSL/USL and read Cp/Cpk (short-term) and Pp/Ppk (overall) in plain English.',
+        doneWhen: 'You are done when you can explain Cp/Cpk vs Pp/Ppk in plain words for your specs.',
         toolId: 'capability',
       },
     ],
@@ -189,16 +199,19 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Eyeball the groups',
         detail: 'Side-by-side box plots — do the middles and spreads even look different?',
+        doneWhen: 'You are done when box plots show whether middles/spreads even look different.',
         toolId: 'compare',
       },
       {
         title: 'Two groups?',
         detail: 'Ask “Are these two groups really different?” (t-test). Read the p-value in plain words.',
+        doneWhen: 'You are done when you can state the p-value meaning for the two groups.',
         toolId: 'ttest',
       },
       {
         title: 'Three or more groups?',
         detail: 'Ask “Is at least one group different?” (ANOVA) instead of ten separate t-tests.',
+        doneWhen: 'You are done when ANOVA tells you whether at least one group differs.',
         toolId: 'anova',
       },
     ],
@@ -239,11 +252,13 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Bring paired columns in',
         detail: 'Need an input column (X) and a result column (Y).',
+        doneWhen: 'You are done when X and Y columns are loaded and paired correctly.',
         toolId: 'data',
       },
       {
         title: 'Fit the line and read R²',
         detail: 'Scatter + best-fit line. R² tells how much of Y’s up-and-down X explains.',
+        doneWhen: 'You are done when you can say how much of Y the line explains (and checked p).',
         toolId: 'regression',
       },
     ],
@@ -280,21 +295,25 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Rank the biggest few',
         detail: 'Pareto chart of defect types or delay causes.',
+        doneWhen: 'You are done when the vital-few bars are clear on the Pareto.',
         toolId: 'pareto',
       },
       {
         title: 'Brainstorm cause families',
         detail: 'Fishbone (6M) on the top bar.',
+        doneWhen: 'You are done when each 6M bone has candidate causes for the top bar.',
         toolId: 'fishbone',
       },
       {
         title: 'Dig to a root cause',
         detail: '5 Whys on the most believable branch — then validate with a test.',
+        doneWhen: 'You are done when Why-chain lands on a fixable root you can test.',
         toolId: 'fivewhys',
       },
       {
         title: 'Prove with data',
         detail: 'If two settings/groups are in play, run a hypothesis test.',
+        doneWhen: 'You are done when a hypothesis test backs (or rejects) the suspected cause.',
         toolId: 'ttest',
       },
     ],
@@ -327,11 +346,13 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Load a Gage study table',
         detail: 'Columns for Part, Operator, and Measurement (with repeats).',
+        doneWhen: 'You are done when Part / Operator / Measurement columns are ready.',
         toolId: 'data',
       },
       {
         title: 'Run Gage R&R (lite)',
         detail: 'Read % gage vs % part in plain English.',
+        doneWhen: 'You are done when you know if noise is mostly gage or mostly parts.',
         toolId: 'gage',
       },
     ],
@@ -364,11 +385,13 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'List steps with min / typical / max',
         detail: 'Enter the time study ranges you already know from the floor.',
+        doneWhen: 'You are done when each step has a realistic time range.',
         toolId: 'montecarlo',
       },
       {
         title: 'Optionally pin into Improve',
         detail: 'Save the report into your DMAIC project’s Improve phase.',
+        doneWhen: 'You are done when the simulation report is pinned to the project.',
         toolId: 'projects',
       },
     ],
@@ -401,11 +424,13 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Score failure modes',
         detail: 'FMEA table: Severity × Occurrence × Detection → RPN.',
+        doneWhen: 'You are done when high-RPN modes have owners and actions.',
         toolId: 'fmea',
       },
       {
         title: 'Keep it in the project',
         detail: 'Track actions in your DMAIC Control / Improve notes.',
+        doneWhen: 'You are done when FMEA actions live in Improve/Control notes.',
         toolId: 'projects',
       },
     ],
@@ -434,11 +459,13 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Describe the problem',
         detail: 'Use Solve so the app suggests methods from your words.',
+        doneWhen: 'You are done when Solve saved a clear problem into a DMAIC project.',
         toolId: 'solve',
       },
       {
         title: 'Open the project binder',
         detail: 'Charter, SIPOC, pinned evidence, improve & control plans.',
+        doneWhen: 'You are done when charter/SIPOC and pinned proof are in one place.',
         toolId: 'projects',
       },
     ],
@@ -475,21 +502,25 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Photograph the numbers',
         detail: 'Histogram / box / run chart on the measurement that looks weird.',
+        doneWhen: 'You are done when histogram/box/run show what looks off this shift.',
         toolId: 'visual',
       },
       {
         title: 'Is it special cause?',
         detail: 'I-MR control chart — red points mean investigate that event, not every wiggle.',
+        doneWhen: 'You are done when I-MR flags (or clears) a special-cause event to investigate.',
         toolId: 'imr',
       },
       {
         title: 'If scrap jumped, score FPY',
         detail: 'Good vs total for the shift (and startup vs steady if you can split it).',
+        doneWhen: 'You are done when startup vs steady FPY is written down.',
         toolId: 'yield',
       },
       {
         title: 'Brainstorm then dig',
         detail: 'Fishbone the effect, 5 Whys on the strongest branch — then prove with data.',
+        doneWhen: 'You are done when Fishbone + 5 Whys name a testable cause.',
         toolId: 'fishbone',
       },
     ],
@@ -526,21 +557,25 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Model the time risk',
         detail: 'Min / typical / max for each changeover step — see how often you miss the target.',
+        doneWhen: 'You are done when you know how often changeover misses the target.',
         toolId: 'montecarlo',
       },
       {
         title: 'Score startup vs steady yield',
         detail: 'Split first-pass yield by period so Reduced Yield is visible.',
+        doneWhen: 'You are done when Reduced Yield (startup scrap) is visible as its own number.',
         toolId: 'yield',
       },
       {
         title: 'Rank delay / scrap reasons',
         detail: 'Pareto the biggest time or defect codes during make-ready.',
+        doneWhen: 'You are done when Pareto shows the vital few make-ready codes.',
         toolId: 'pareto',
       },
       {
         title: 'Track the kaizen in a project',
         detail: 'Internal vs external task list, owners, and before/after proof.',
+        doneWhen: 'You are done when SMED tasks, owners, and before/after are recorded.',
         toolId: 'projects',
       },
     ],
@@ -573,21 +608,25 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Calculate first-pass yield',
         detail: 'Good vs total; use By period for startup vs run.',
+        doneWhen: 'You are done when FPY (and startup vs steady if split) is calculated.',
         toolId: 'yield',
       },
       {
         title: 'Rank defect codes',
         detail: 'Pareto the vital few scrap reasons.',
+        doneWhen: 'You are done when the biggest scrap reasons are ranked.',
         toolId: 'pareto',
       },
       {
         title: 'Check if quality is stable',
         detail: 'I-MR on a key CTQ or scrap rate over time.',
+        doneWhen: 'You are done when I-MR on the CTQ/scrap rate is reviewed.',
         toolId: 'imr',
       },
       {
         title: 'Dig the top bar',
         detail: 'Fishbone / 5 Whys on the biggest defect family.',
+        doneWhen: 'You are done when Fishbone/5 Whys target the biggest defect family.',
         toolId: 'fishbone',
       },
     ],
@@ -624,16 +663,19 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Load before & after columns',
         detail: 'Paste the old samples and the new samples side by side.',
+        doneWhen: 'You are done when old and new samples sit in two columns.',
         toolId: 'data',
       },
       {
         title: 'Run the before/after check',
         detail: 'See if the average moved the right way for real (not luck).',
+        doneWhen: 'You are done when you know if the average moved the right way for real.',
         toolId: 'beforeafter',
       },
       {
         title: 'Lock the gain',
         detail: 'Control-chart the after stream and update the standard.',
+        doneWhen: 'You are done when after-stream control chart and standard work are updated.',
         toolId: 'imr',
       },
     ],
@@ -670,16 +712,19 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Score OEE lite',
         detail: 'Planned time, downtime, ideal cycle, total & good pieces.',
+        doneWhen: 'You are done when Availability, Performance, and Quality are scored.',
         toolId: 'oee',
       },
       {
         title: 'Pareto the biggest loss reasons',
         detail: 'Downtime codes or jam reasons — vital few first.',
+        doneWhen: 'You are done when downtime/jam codes show the vital few.',
         toolId: 'pareto',
       },
       {
         title: 'If changeover time dominates',
         detail: 'Simulate step times and attack the longest internal tasks.',
+        doneWhen: 'You are done when the longest internal tasks are identified to attack.',
         toolId: 'montecarlo',
       },
     ],
@@ -720,21 +765,25 @@ export const PATHWAYS: Pathway[] = [
       {
         title: 'Run a waste walk',
         detail: 'Tap DOWNTIME wastes as you see them — log observations and impact.',
+        doneWhen: 'You are done when DOWNTIME observations and impacts are logged.',
         toolId: 'wastewalk',
       },
       {
         title: 'Score 5S',
         detail: 'Sort → Sustain checklist with 1–5 taps; fix the weakest pillar first.',
+        doneWhen: 'You are done when all pillars are scored and the weakest has an action.',
         toolId: 'fives',
       },
       {
         title: 'Cluster causes if needed',
         detail: 'Fishbone on the biggest waste theme (often Motion or Waiting).',
+        doneWhen: 'You are done when Fishbone covers the biggest waste theme.',
         toolId: 'fishbone',
       },
       {
         title: 'Keep actions in a project',
         detail: 'Owners, due dates, and before/after proof.',
+        doneWhen: 'You are done when owners, due dates, and before/after proof are pinned.',
         toolId: 'projects',
       },
     ],

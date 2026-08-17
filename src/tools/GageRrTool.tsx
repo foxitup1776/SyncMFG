@@ -1,4 +1,9 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
@@ -6,8 +11,11 @@ import { usePersistedState } from '../hooks/usePersistedState'
 import { getDataset, listDatasets } from '../storage/datasets'
 import { fmt } from '../stats/descriptive'
 import { computeGageRr } from '../stats/gageRr'
+import { interpretGage } from '../stats/interpretations'
 
-export function GageRrTool() {
+export function GageRrTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.gage.dataset', '')
   const [partCol, setPartCol] = usePersistedState('tool.gage.part', 'Part')
   const [opCol, setOpCol] = usePersistedState('tool.gage.op', 'Operator')
@@ -32,6 +40,11 @@ export function GageRrTool() {
       .filter((r) => r.part && r.operator && Number.isFinite(r.value))
     return computeGageRr(rows)
   }, [dataset, partCol, opCol, valCol])
+
+  const interp = useMemo(
+    () => (result ? interpretGage(result.pctGage) : null),
+    [result],
+  )
 
   const report: AnalysisReport | null = useMemo(() => {
     if (!result || !dataset) return null
@@ -58,6 +71,12 @@ export function GageRrTool() {
           Need columns for Part, Operator, and Measurement (repeat rows for
           repeats).
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Need Part, Operator, and Measurement columns with repeats. Paste a
+            Gage study table under Data, then map the three columns here.
+          </p>
+        ) : null}
         <div className="field-grid">
           <div>
             <label>Dataset</label>
@@ -117,6 +136,21 @@ export function GageRrTool() {
 
       {result ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              {result.pctGage >= 30 ? (
+                <NextStepCta
+                  label="Fix data / method first"
+                  view="data"
+                  onNavigate={onNavigate}
+                />
+              ) : null}
+            </InterpretBanner>
+          ) : null}
           <div className="stat-strip">
             <div>
               <span>% Gage</span>

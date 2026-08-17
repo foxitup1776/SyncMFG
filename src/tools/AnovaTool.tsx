@@ -1,4 +1,9 @@
 import { useMemo } from 'react'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import { BoxPlotChart } from '../components/charts/StatCharts'
@@ -8,8 +13,11 @@ import { getDataset, listDatasets } from '../storage/datasets'
 import { oneWayAnova } from '../stats/anova'
 import { numericColumn, numericColumnNames } from '../stats/column'
 import { fmt, quartiles } from '../stats/descriptive'
+import { interpretAnova } from '../stats/interpretations'
 
-export function AnovaTool() {
+export function AnovaTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.anova.dataset', '')
   const [selected, setSelected] = usePersistedState<string[]>(
     'tool.anova.cols',
@@ -35,6 +43,18 @@ export function AnovaTool() {
         .map((g) => ({ name: g.name, box: quartiles(g.values) }))
         .filter((g) => g.box),
     [groups],
+  )
+
+  const interp = useMemo(
+    () =>
+      result
+        ? interpretAnova({
+            pValue: result.pValue,
+            groupNames: result.groupNames,
+            groupMeans: result.groupMeans,
+          })
+        : null,
+    [result],
   )
 
   const report: AnalysisReport | null = useMemo(() => {
@@ -76,6 +96,12 @@ export function AnovaTool() {
           For three or more groups (shifts, ovens, suppliers). Pick at least
           three numeric columns.
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Need three or more numeric group columns (e.g. Shift1, Shift2,
+            Shift3). Paste under Data, then check the columns to compare.
+          </p>
+        ) : null}
         <label>Dataset</label>
         <select
           value={datasetId}
@@ -111,6 +137,31 @@ export function AnovaTool() {
 
       {result ? (
         <>
+          {interp ? (
+            <InterpretBanner
+              title={interp.title}
+              plain={interp.plain}
+              meta={interp.meta}
+            >
+              <ul className="ranked-means">
+                {interp.ranked.map((r) => (
+                  <li key={r.name}>
+                    <strong>{r.name}</strong> — mean {fmt(r.mean)}
+                  </li>
+                ))}
+              </ul>
+              {interp.pairwiseHint ? (
+                <p className="meta">{interp.pairwiseHint}</p>
+              ) : null}
+              {result.pValue < 0.05 ? (
+                <NextStepCta
+                  label="Open Fishbone"
+                  view="fishbone"
+                  onNavigate={onNavigate}
+                />
+              ) : null}
+            </InterpretBanner>
+          ) : null}
           <div className="stat-strip">
             <div>
               <span>Groups</span>

@@ -12,18 +12,24 @@ Private Lean Six Sigma workbench — paste Excel data, run analyses, email or pr
 
 ## Tools
 
-**Problem solving**
-- Solve form with tool suggestions
+**Methods & coaching**
+- Visual method pathways (shop-floor jobs → steps → tools)
+- Solve form with situation chips, method tiles, and ranked tool suggestions
 - DMAIC project / A3 binder (pin stats evidence by phase)
+
+**Problem solving**
 - Fishbone (6M), 5 Whys, FMEA (RPN)
+- Waste walk (DOWNTIME / 8 wastes), 5S workplace audit
+- Before / After improvement check
 
 **Stats**
 - Data ingest + sample datasets (30-day local save)
 - Histogram / Box / Run, multi-column compare
 - I-MR with Western Electric rules, X̄-R
 - Process capability (Cp/Cpk/Pp/Ppk)
-- Pareto, 2-sample t-test, scatter/regression
+- Pareto, 2-sample t-test, ANOVA (3+ groups), scatter/regression
 - Gage R&R (lite), time-study Monte Carlo
+- First-pass yield / scrap (startup vs steady), OEE lite
 
 **Share & setup**
 - Email, Print/PDF, optional Web3Forms send

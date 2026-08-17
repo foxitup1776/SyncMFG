@@ -5,10 +5,16 @@ import {
   Line,
   ResponsiveContainer,
   Scatter,
+  ScatterChart,
   Tooltip,
   XAxis,
   YAxis,
 } from 'recharts'
+import type { AppView } from '../components/AppShell'
+import {
+  InterpretBanner,
+  NextStepCta,
+} from '../components/InterpretBanner'
 import { PlainReport } from '../components/PlainReport'
 import { ToolGuidePanel } from '../components/ToolGuidePanel'
 import type { AnalysisReport } from '../data/types'
@@ -19,7 +25,9 @@ import { fmt } from '../stats/descriptive'
 import { describeR2 } from '../stats/distributionShape'
 import { simpleRegression } from '../stats/regression'
 
-export function RegressionTool() {
+export function RegressionTool({
+  onNavigate,
+}: { onNavigate?: (v: AppView) => void } = {}) {
   const [datasetId, setDatasetId] = usePersistedState('tool.reg.dataset', '')
   const [xCol, setXCol] = usePersistedState('tool.reg.x', '')
   const [yCol, setYCol] = usePersistedState('tool.reg.y', '')
@@ -36,6 +44,21 @@ export function RegressionTool() {
     [result],
   )
 
+  const highBand =
+    r2Reading?.band === 'high' || r2Reading?.band === 'very high'
+  const nWarn = result != null && result.n < 10
+
+  const residualPoints = useMemo(
+    () =>
+      result
+        ? result.points.map((p) => ({
+            fitted: p.fitted,
+            residual: p.residual,
+          }))
+        : [],
+    [result],
+  )
+
   const report: AnalysisReport | null = useMemo(() => {
     if (!result || !dataset || !r2Reading) return null
     return {
@@ -46,11 +69,13 @@ export function RegressionTool() {
         `Rule of thumb from the line: ${yCol} ≈ ${fmt(result.intercept)} + ${fmt(result.slope)} × ${xCol}. When ${xCol} goes up by 1, ${yCol} moves about ${fmt(result.slope)} on average.`,
         `Correlation r = ${fmt(result.r, 3)} — ${result.r >= 0 ? 'same direction' : 'opposite directions'}.`,
         `Based on ${result.n} paired rows from “${dataset.name}”.`,
-        r2Reading.caution,
+        nWarn
+          ? 'Warning: fewer than 10 paired points — a strong R² can still be luck. Collect more data before betting the process.'
+          : r2Reading.caution,
       ],
       termsUsed: ['r-squared', 'correlation', 'regression', 'slope'],
     }
-  }, [result, dataset, xCol, yCol, r2Reading])
+  }, [result, dataset, xCol, yCol, r2Reading, nWarn])
 
   return (
     <div className="tool-view">
@@ -61,6 +86,12 @@ export function RegressionTool() {
           Pick an input and a result. We’ll show the scatter, a best-fit line, and
           how much of the result the input explains.
         </p>
+        {!datasetId ? (
+          <p className="meta">
+            Need two paired numeric columns (X input and Y result) in the same
+            rows. Paste under Data, then pick X and Y here.
+          </p>
+        ) : null}
         <div className="field-grid">
           <div>
             <label>Dataset</label>
@@ -109,18 +140,31 @@ export function RegressionTool() {
 
       {result && r2Reading ? (
         <>
-          <section className="panel soft interpret-banner">
-            <p className="guide-kicker">Chart interpretation</p>
-            <h3>
-              R² is {r2Reading.band} ({fmt(result.r2 * 100, 1)}%)
-            </h3>
-            <p>
-              {r2Reading.relatedPlain
-                .replace(/\bX\b/g, `“${xCol}”`)
-                .replace(/\bY\b/g, `“${yCol}”`)}
-            </p>
-            <p className="meta">{r2Reading.caution}</p>
-          </section>
+          <InterpretBanner
+            title={`R² is ${r2Reading.band} (${fmt(result.r2 * 100, 1)}%)`}
+            plain={r2Reading.relatedPlain
+              .replace(/\bX\b/g, `“${xCol}”`)
+              .replace(/\bY\b/g, `“${yCol}”`)}
+            meta={
+              nWarn
+                ? `Fewer than 10 points (n=${result.n}) — treat a strong R² with caution until you collect more paired rows. ${r2Reading.caution}`
+                : r2Reading.caution
+            }
+          >
+            {highBand ? (
+              <>
+                <p className="meta">
+                  Pin this report and verify the cause on the floor — correlation
+                  is not automatic proof of a fix.
+                </p>
+                <NextStepCta
+                  label="Pin + verify cause"
+                  view="projects"
+                  onNavigate={onNavigate}
+                />
+              </>
+            ) : null}
+          </InterpretBanner>
           <div className="chart-card">
             <h3>Scatter with fit line</h3>
             <div className="chart-frame">
@@ -140,6 +184,33 @@ export function RegressionTool() {
                     strokeWidth={2}
                   />
                 </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          <div className="chart-card">
+            <h3>Residuals vs fitted</h3>
+            <p className="chart-caption">
+              Scatter of leftover error (Y − fit) against the fitted value —
+              look for fan shapes or curves that say the straight line is a poor
+              model.
+            </p>
+            <div className="chart-frame">
+              <ResponsiveContainer width="100%" height={260}>
+                <ScatterChart data={residualPoints}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#c5d0d6" />
+                  <XAxis
+                    dataKey="fitted"
+                    name="Fitted"
+                    tick={{ fontSize: 11 }}
+                  />
+                  <YAxis
+                    dataKey="residual"
+                    name="Residual"
+                    tick={{ fontSize: 11 }}
+                  />
+                  <Tooltip />
+                  <Scatter dataKey="residual" fill="#3d5a80" name="Residual" />
+                </ScatterChart>
               </ResponsiveContainer>
             </div>
           </div>

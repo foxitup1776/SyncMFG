@@ -6,7 +6,7 @@ export interface RegressionResult {
   intercept: number
   r: number
   r2: number
-  points: { x: number; y: number; fitted: number }[]
+  points: { x: number; y: number; fitted: number; residual: number }[]
 }
 
 export function simpleRegression(
@@ -34,10 +34,14 @@ export function simpleRegression(
   const intercept = my - slope * mx
   const r = sxy / Math.sqrt(sxx * syy)
   const r2 = r * r
-  const points = x.map((xi, i) => ({
-    x: xi,
-    y: y[i],
-    fitted: intercept + slope * xi,
-  }))
+  const points = x.map((xi, i) => {
+    const fitted = intercept + slope * xi
+    return {
+      x: xi,
+      y: y[i],
+      fitted,
+      residual: y[i] - fitted,
+    }
+  })
   return { n, slope, intercept, r, r2, points }
 }
