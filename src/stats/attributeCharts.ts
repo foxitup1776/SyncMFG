@@ -138,23 +138,23 @@ export function computeAttributeChart(
   let limitsOf: (row: AttributeRow) => { ucl: number; lcl: number }
 
   if (kind === 'p') {
-    center = totalCount / totalSize
+    const pBar = totalCount / totalSize
+    center = pBar * 100
     valueLabel = 'Share that failed'
     unitLabel = '% failed'
     pointOf = (r) => (r.count / r.size) * 100
     limitsOf = (r) => {
-      const spread = 3 * Math.sqrt((center * (1 - center)) / r.size)
+      const spread = 3 * Math.sqrt((pBar * (1 - pBar)) / r.size)
       return {
-        ucl: Math.min(1, center + spread) * 100,
-        lcl: Math.max(0, center - spread) * 100,
+        ucl: Math.min(1, pBar + spread) * 100,
+        lcl: Math.max(0, pBar - spread) * 100,
       }
     }
-    if (avgSize * center < 5) {
+    if (avgSize * pBar < 5) {
       warnings.push(
-        `On average you only expect about ${(avgSize * center).toFixed(1)} failed pieces per sample. Limits get twitchy below ~5 — inspect bigger samples or group days together.`,
+        `On average you only expect about ${(avgSize * pBar).toFixed(1)} failed pieces per sample. Limits get twitchy below ~5 — inspect bigger samples or group days together.`,
       )
     }
-    center = center * 100
   } else if (kind === 'np') {
     const pBar = totalCount / totalSize
     center = pBar * avgSize

@@ -5,6 +5,8 @@
  * proportion tests all speak the same math.
  */
 
+import { erf } from './special'
+
 /** Area under the bell curve to the left of z. */
 export function normalCdf(z: number): number {
   if (!Number.isFinite(z)) return z > 0 ? 1 : 0
@@ -71,17 +73,3 @@ export function zOneSided(alpha: number): number {
   return normalQuantile(1 - alpha)
 }
 
-function erf(x: number): number {
-  const sign = x < 0 ? -1 : 1
-  const ax = Math.abs(x)
-  // Abramowitz & Stegun 7.1.26
-  const t = 1 / (1 + 0.3275911 * ax)
-  const y =
-    1 -
-    ((((1.061405429 * t - 1.453152027) * t + 1.421413741) * t - 0.284496736) *
-      t +
-      0.254829592) *
-      t *
-      Math.exp(-ax * ax)
-  return sign * y
-}

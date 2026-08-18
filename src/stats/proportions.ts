@@ -1,4 +1,5 @@
 import { normalCdf, zTwoSided } from './normal'
+import { chiSquareCdf } from './special'
 
 /**
  * Hypothesis tests for counted data: one rate against a target, two rates
@@ -239,59 +240,7 @@ export function chiSquareContingency(
 /** Right-tail area of the chi-square curve. */
 export function chiSquarePValue(x: number, df: number): number {
   if (!Number.isFinite(x) || x <= 0 || df < 1) return 1
-  return clamp01(1 - lowerGamma(df / 2, x / 2))
-}
-
-/** Regularized lower incomplete gamma P(a, x). */
-function lowerGamma(a: number, x: number): number {
-  if (x <= 0) return 0
-  if (x < a + 1) {
-    // Series expansion
-    let sum = 1 / a
-    let term = sum
-    for (let n = 1; n < 300; n++) {
-      term *= x / (a + n)
-      sum += term
-      if (Math.abs(term) < Math.abs(sum) * 1e-14) break
-    }
-    return sum * Math.exp(-x + a * Math.log(x) - logGamma(a))
-  }
-  // Continued fraction for the upper tail, then flip
-  let b = x + 1 - a
-  let c = 1 / 1e-30
-  let d = 1 / b
-  let h = d
-  for (let i = 1; i < 300; i++) {
-    const an = -i * (i - a)
-    b += 2
-    d = an * d + b
-    if (Math.abs(d) < 1e-30) d = 1e-30
-    c = b + an / c
-    if (Math.abs(c) < 1e-30) c = 1e-30
-    d = 1 / d
-    const del = d * c
-    h *= del
-    if (Math.abs(del - 1) < 1e-14) break
-  }
-  const q = Math.exp(-x + a * Math.log(x) - logGamma(a)) * h
-  return 1 - q
-}
-
-function logGamma(z: number): number {
-  const g = 7
-  const p = [
-    0.99999999999980993, 676.5203681218851, -1259.1392167224028,
-    771.32342877765313, -176.61502916214059, 12.507343278686905,
-    -0.13857109526572012, 9.9843696540789804e-6, 1.5056327351493116e-7,
-  ]
-  if (z < 0.5) {
-    return Math.log(Math.PI / Math.sin(Math.PI * z)) - logGamma(1 - z)
-  }
-  z -= 1
-  let x = p[0]
-  for (let i = 1; i < p.length; i++) x += p[i] / (z + i)
-  const t = z + g + 0.5
-  return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x)
+  return clamp01(1 - chiSquareCdf(x, df))
 }
 
 function clamp01(v: number): number {
