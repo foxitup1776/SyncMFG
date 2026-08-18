@@ -6,15 +6,15 @@ Private Lean Six Sigma workbench — paste Excel data, run analyses, email or pr
 
 ## How to use it
 
-1. **Solve** — write the problem, tap situations that fit, get suggested tools  
-2. Open a tool — each one starts with *what problem / what it does / how to use it*  
-3. Pin reports into a **DMAIC project** to keep the story together  
+1. **Start** — write the problem, tap what fits, get a short next step  
+2. **Methods** — three-circle map (SPC · prove · Lean); open a tool when you are ready  
+3. Pin reports into a **DMAIC project** to keep the story together. How-to library lives under Settings.  
 
 ## Tools
 
 **Methods & coaching**
-- Visual method pathways (shop-floor jobs → steps → tools)
-- Solve form with situation chips, method tiles, and ranked tool suggestions
+- Visual method pathways grouped by job (floor now, prove it, numbers, pace/cost, projects)
+- Start form with a few situation chips, method tiles, and compact tool suggestions
 - DMAIC project / A3 binder (pin stats evidence by phase)
 
 **Problem solving**

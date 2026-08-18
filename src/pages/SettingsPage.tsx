@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { AppView } from '../components/AppShell'
 import {
   addSharePassword,
   countExtraPasswords,
@@ -7,7 +8,11 @@ import {
 import { sessionMinutesLeft } from '../auth/session'
 import { loadSettings, saveSettings, type AppSettings } from '../storage/settings'
 
-export function SettingsPage() {
+export function SettingsPage({
+  onNavigate,
+}: {
+  onNavigate: (v: AppView) => void
+}) {
   const [settings, setSettings] = useState<AppSettings>(() => loadSettings())
   const [newPassword, setNewPassword] = useState('')
   const [note, setNote] = useState('')
@@ -28,8 +33,41 @@ export function SettingsPage() {
 
   return (
     <div className="settings-page">
+      <section className="panel start-hero">
+        <h1>Settings</h1>
+        <p className="lede">
+          Site access on this device, plus the how-to library for every tool.
+        </p>
+        <div className="settings-tabs">
+          <span className="settings-tab on">Site</span>
+          <button
+            type="button"
+            className="settings-tab"
+            onClick={() => onNavigate('guides')}
+          >
+            How-to guides
+          </button>
+        </div>
+      </section>
+
       <section className="panel">
-        <h2>Settings</h2>
+        <h2>How-to library</h2>
+        <p className="lede">
+          Detailed floor procedures for each calculator — when to use it, what
+          you need, steps, done-when, and watch-outs. Teaching-note quotes
+          included.
+        </p>
+        <button
+          type="button"
+          className="btn primary"
+          onClick={() => onNavigate('guides')}
+        >
+          Open how-to guides
+        </button>
+      </section>
+
+      <section className="panel">
+        <h2>Session</h2>
         <p className="lede">
           Session left: about {sessionMinutesLeft()} minutes. Passwords are
           stored as irreversible digests — not plain text in the public code.

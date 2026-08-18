@@ -1,8 +1,12 @@
 import { useMemo, useState } from 'react'
 import type { AppView } from '../components/AppShell'
 import { pathwaysForSituations } from '../guides/pathways'
+import { flowForTool, type FlowState } from '../guides/toolMap'
 import { suggestTools } from '../guides/suggestTools'
-import { getToolGuide, SITUATIONS } from '../guides/toolGuides'
+import {
+  FEATURED_SITUATION_IDS,
+  SITUATIONS,
+} from '../guides/toolGuides'
 import { usePersistedState } from '../hooks/usePersistedState'
 import {
   createProject,
@@ -11,7 +15,7 @@ import {
   setActiveProjectId,
 } from '../storage/projects'
 
-export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) {
+export function SolvePage({ onNavigate }: { onNavigate: (v: AppView, flow?: FlowState) => void }) {
   const [problem, setProblem] = usePersistedState('solve.problem', '')
   const [goal, setGoal] = usePersistedState('solve.goal', '')
   const [situations, setSituations] = usePersistedState<string[]>(
@@ -19,15 +23,25 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
     [],
   )
   const [note, setNote] = useState('')
+  const [showAllSituations, setShowAllSituations] = useState(false)
 
   const suggestions = useMemo(
-    () => suggestTools(problem, situations),
+    () => suggestTools(problem, situations).slice(0, 4),
     [problem, situations],
   )
 
   const pathwayHits = useMemo(
-    () => pathwaysForSituations(situations).slice(0, 4),
+    () => pathwaysForSituations(situations).slice(0, 3),
     [situations],
+  )
+
+  const visibleSituations = showAllSituations
+    ? SITUATIONS
+    : SITUATIONS.filter((s) => FEATURED_SITUATION_IDS.includes(s.id))
+
+  const hiddenCount = SITUATIONS.length - FEATURED_SITUATION_IDS.length
+  const hiddenSelected = situations.some(
+    (id) => !FEATURED_SITUATION_IDS.includes(id),
   )
 
   function toggleSituation(id: string) {
@@ -37,9 +51,7 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
   }
 
   function startProjectFromForm() {
-    const name =
-      problem.trim().slice(0, 48) ||
-      'New problem project'
+    const name = problem.trim().slice(0, 48) || 'New problem project'
     const existing = getActiveProject()
     if (existing && !existing.problem.trim()) {
       const updated = saveProject({
@@ -65,22 +77,25 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
     onNavigate('projects')
   }
 
+  const hasInput = problem.trim().length >= 8 || situations.length > 0
+
   return (
     <div className="solve-page">
-      <section className="panel">
-        <h2>What problem are you solving?</h2>
+      <section className="panel start-hero">
+        <p className="eyebrow">Start here</p>
+        <h1>What’s the problem?</h1>
         <p className="lede">
-          Write it in plain language, tap what sounds closest, and we’ll suggest
-          methods and tools — explained as questions first, jargon second.
+          Write it in plain language and tap what fits. We’ll point at a method
+          — not a textbook menu.
         </p>
 
-        <label htmlFor="problem-statement">Problem statement</label>
+        <label htmlFor="problem-statement">Problem</label>
         <textarea
           id="problem-statement"
-          rows={4}
+          rows={3}
           value={problem}
           onChange={(e) => setProblem(e.target.value)}
-          placeholder="Example: Line 2 scrap jumped this week — mostly burnt edges — and we don’t know if Oven B is worse than Oven A."
+          placeholder="Example: Line 2 scrap jumped — burnt edges — is Oven B worse than Oven A?"
         />
 
         <label htmlFor="problem-goal">What “better” looks like (optional)</label>
@@ -91,9 +106,9 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
           placeholder="Example: Cut burnt-edge defects by 50% in 30 days"
         />
 
-        <h3 className="subhead">What’s going on? (pick any that fit)</h3>
+        <h3 className="subhead">What’s going on?</h3>
         <div className="situation-grid">
-          {SITUATIONS.map((s) => {
+          {visibleSituations.map((s) => {
             const on = situations.includes(s.id)
             return (
               <button
@@ -104,11 +119,23 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
                 aria-pressed={on}
               >
                 <strong>{s.label}</strong>
-                <span>{s.hint}</span>
               </button>
             )
           })}
         </div>
+        {hiddenCount > 0 ? (
+          <button
+            type="button"
+            className="btn ghost"
+            onClick={() => setShowAllSituations((v) => !v)}
+          >
+            {showAllSituations
+              ? 'Show fewer'
+              : hiddenSelected
+                ? `More situations (${hiddenCount}) — some selected`
+                : `More situations (${hiddenCount})`}
+          </button>
+        ) : null}
 
         <div className="row actions">
           <button
@@ -117,32 +144,29 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
             disabled={problem.trim().length < 8}
             onClick={startProjectFromForm}
           >
-            Save into a DMAIC project
+            Save as a project
           </button>
           <button
             type="button"
             className="btn secondary"
             onClick={() => onNavigate('tools')}
           >
-            Choose a method visually
+            Browse methods
           </button>
         </div>
         {note ? <p className="share-note">{note}</p> : null}
       </section>
 
-      {pathwayHits.length > 0 ? (
+      {hasInput ? (
         <section className="panel soft">
-          <h2>Suggested methods</h2>
-          <p className="lede">
-            Visual pathways with teaching-note quotes and step-by-step tools.
-          </p>
-          <div className="pathway-grid compact">
-            {pathwayHits.map((p) => {
-              const firstTool = p.steps.find((s) => s.toolId)?.toolId
-              const firstGuide = firstTool ? getToolGuide(firstTool) : undefined
-              return (
-                <div key={p.id} className="pathway-suggest-card">
+          <h2>Next step</h2>
+          {pathwayHits.length > 0 ? (
+            <>
+              <p className="lede">Suggested methods</p>
+              <div className="pathway-grid compact">
+                {pathwayHits.map((p) => (
                   <button
+                    key={p.id}
                     type="button"
                     className="pathway-tile"
                     onClick={() => {
@@ -159,72 +183,45 @@ export function SolvePage({ onNavigate }: { onNavigate: (v: AppView) => void }) 
                   >
                     <span className="pathway-short">{p.shortLabel}</span>
                     <strong>{p.title}</strong>
-                    <span className="pathway-sub">{p.subtitle}</span>
                   </button>
-                  {firstTool ? (
+                ))}
+              </div>
+            </>
+          ) : null}
+
+          {suggestions.length === 0 ? (
+            <p className="form-error">
+              Type a bit more in the problem box or pick a situation above.
+            </p>
+          ) : (
+            <>
+              <p className="lede">Or jump straight to a tool</p>
+              <ol className="suggest-list compact">
+                {suggestions.map(({ guide, reasons }) => (
+                  <li key={guide.id} className="suggest-card compact">
+                    <div>
+                      <h3>{guide.plainName}</h3>
+                      <p>{guide.problem}</p>
+                      {reasons.length ? (
+                        <p className="meta">{reasons[0]}</p>
+                      ) : null}
+                    </div>
                     <button
                       type="button"
-                      className="btn secondary"
-                      onClick={() => onNavigate(firstTool)}
+                      className="btn primary"
+                      onClick={() =>
+                        onNavigate(guide.id, flowForTool(guide.id) ?? undefined)
+                      }
                     >
-                      Open {firstGuide?.plainName ?? 'first tool'}
+                      Open
                     </button>
-                  ) : null}
-                </div>
-              )
-            })}
-          </div>
+                  </li>
+                ))}
+              </ol>
+            </>
+          )}
         </section>
       ) : null}
-
-      <section className="panel soft">
-        <h2>Suggested next tools</h2>
-        <p className="lede">
-          Start at the top. Each card answers: what problem → what it does → how
-          to use it.
-        </p>
-        {suggestions.length === 0 ? (
-          <p className="form-error">
-            Type a bit more in the problem box or pick a situation above.
-          </p>
-        ) : (
-          <ol className="suggest-list">
-            {suggestions.map(({ guide, reasons }, index) => (
-              <li key={guide.id} className="suggest-card">
-                <div className="suggest-rank">Step {index + 1}</div>
-                <h3>{guide.plainName}</h3>
-                {guide.alsoCalled ? (
-                  <p className="guide-also">Also called: {guide.alsoCalled}</p>
-                ) : null}
-                <p>
-                  <strong>Problem it fits:</strong> {guide.problem}
-                </p>
-                <p>
-                  <strong>What it does:</strong> {guide.does}
-                </p>
-                <p>
-                  <strong>How to use it:</strong>
-                </p>
-                <ol className="guide-steps compact">
-                  {guide.how.map((step) => (
-                    <li key={step}>{step}</li>
-                  ))}
-                </ol>
-                {reasons.length ? (
-                  <p className="meta">Why suggested: {reasons.join(' · ')}</p>
-                ) : null}
-                <button
-                  type="button"
-                  className="btn primary"
-                  onClick={() => onNavigate(guide.id)}
-                >
-                  Open this tool
-                </button>
-              </li>
-            ))}
-          </ol>
-        )}
-      </section>
     </div>
   )
 }

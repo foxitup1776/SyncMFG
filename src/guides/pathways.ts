@@ -26,6 +26,43 @@ export interface Pathway {
   relatedSituations: string[]
 }
 
+/** Groups methods so the grid is five choices, not nineteen. */
+export type PathwayFamily = 'now' | 'prove' | 'numbers' | 'flow' | 'project'
+
+export const PATHWAY_FAMILIES: {
+  id: PathwayFamily
+  title: string
+  hint: string
+}[] = [
+  { id: 'now', title: 'On the floor now', hint: 'Shift problems you can act on today' },
+  { id: 'prove', title: 'Prove a difference', hint: 'Is it real — and did the fix work?' },
+  { id: 'numbers', title: 'Read the numbers', hint: 'Shape, stability, specs, gage' },
+  { id: 'flow', title: 'Pace, time & cost', hint: 'Takt, changeover, dollars' },
+  { id: 'project', title: 'Causes & projects', hint: 'Root cause and DMAIC binder' },
+]
+
+export const PATHWAY_FAMILY: Record<string, PathwayFamily> = {
+  'red-flag': 'now',
+  'yield-path': 'now',
+  changeover: 'now',
+  'speed-flow': 'now',
+  'waste-5s': 'now',
+  hypothesis: 'prove',
+  'fix-check': 'prove',
+  'plan-study': 'prove',
+  predictive: 'prove',
+  'see-data': 'numbers',
+  stability: 'numbers',
+  capability: 'numbers',
+  measurement: 'numbers',
+  'pace-line': 'flow',
+  'time-risk': 'flow',
+  'money-cost': 'flow',
+  'vital-few': 'project',
+  prevent: 'project',
+  dmaic: 'project',
+}
+
 /**
  * Visual method pathways — shop-floor jobs first, math second.
  * Quotes adapted from the Obsidian Lean / Six Sigma / Maths vault.
@@ -748,7 +785,7 @@ export const PATHWAYS: Pathway[] = [
   {
     id: 'fix-check',
     title: 'Did the fix work?',
-    shortLabel: 'Prove it',
+    shortLabel: 'Fix check',
     subtitle: 'Before vs after for operators',
     floorQuestion: 'We changed something — did the numbers actually get better?',
     whyItMatters:

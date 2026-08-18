@@ -958,6 +958,17 @@ export interface SituationOption {
 }
 
 /** Selectable problem situations for the Solve form. */
+export const FEATURED_SITUATION_IDS = [
+  'red-flag',
+  'defects',
+  'unstable',
+  'specs',
+  'two-groups',
+  'slow-line',
+  'changeover',
+  'yield-drop',
+]
+
 export const SITUATIONS: SituationOption[] = [
   {
     id: 'defects',

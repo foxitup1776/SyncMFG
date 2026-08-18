@@ -1,9 +1,12 @@
 import { useEffect, useState, type ReactNode } from 'react'
 import { isAuthenticated, touchSession } from './auth/session'
-import { AppShell, type AppView } from './components/AppShell'
+import { AppShell, isToolView, type AppView } from './components/AppShell'
 import { LoginGate } from './components/LoginGate'
+import type { FlowState } from './guides/toolMap'
+import { touchFlow } from './guides/toolMap'
+import { usePersistedState } from './hooks/usePersistedState'
 import { DataPage } from './pages/DataPage'
-import { HomePage } from './pages/HomePage'
+import { HowToPage } from './pages/HowToPage'
 import { ProjectsPage } from './pages/ProjectsPage'
 import { SettingsPage } from './pages/SettingsPage'
 import { SolvePage } from './pages/SolvePage'
@@ -56,7 +59,17 @@ function ToolFrame({
 
 export default function App() {
   const [authed, setAuthed] = useState(() => isAuthenticated())
-  const [view, setView] = useState<AppView>('home')
+  const [view, setView] = useState<AppView>('solve')
+  const [flow, setFlow] = usePersistedState<FlowState | null>('flow.v1', null)
+
+  function go(next: AppView, nextFlow?: FlowState) {
+    if (nextFlow) {
+      setFlow({ ...nextFlow, current: isToolView(next) ? next : nextFlow.current })
+    } else {
+      setFlow((prev) => touchFlow(prev, next, isToolView(next)))
+    }
+    setView(next)
+  }
 
   useEffect(() => {
     purgeExpiredDatasets()
@@ -88,141 +101,150 @@ export default function App() {
   }
 
   return (
-    <AppShell view={view} onNavigate={setView}>
-      {view === 'home' ? <HomePage onNavigate={setView} /> : null}
-      {view === 'solve' ? <SolvePage onNavigate={setView} /> : null}
+    <AppShell
+      view={view}
+      onNavigate={go}
+      flow={flow}
+      onClearFlow={() => setFlow(null)}
+    >
+      {view === 'home' || view === 'solve' ? (
+        <SolvePage onNavigate={go} />
+      ) : null}
       {view === 'data' ? <DataPage /> : null}
-      {view === 'projects' ? <ProjectsPage onNavigate={setView} /> : null}
-      {view === 'tools' ? <ToolsPage onNavigate={setView} /> : null}
-      {view === 'settings' ? <SettingsPage /> : null}
+      {view === 'projects' ? <ProjectsPage onNavigate={go} /> : null}
+      {view === 'tools' ? (
+        <ToolsPage onNavigate={go} current={flow?.current} />
+      ) : null}
+      {view === 'settings' ? <SettingsPage onNavigate={go} /> : null}
+      {view === 'guides' ? <HowToPage onNavigate={go} /> : null}
       {view === 'visual' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <VisualTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <VisualTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'imr' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <ImrTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <ImrTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'capability' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <CapabilityTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <CapabilityTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'montecarlo' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <MonteCarloTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <MonteCarloTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'pareto' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <ParetoTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <ParetoTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'ttest' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <TTestTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <TTestTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'anova' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <AnovaTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <AnovaTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'regression' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <RegressionTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <RegressionTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'xbarr' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <XbarRTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <XbarRTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'gage' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <GageRrTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <GageRrTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'compare' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <CompareTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <CompareTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'fishbone' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <FishboneTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <FishboneTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'fivewhys' ? (
-        <ToolFrame onBack={() => setView('tools')}>
+        <ToolFrame onBack={() => go('tools')}>
           <FiveWhysTool />
         </ToolFrame>
       ) : null}
       {view === 'fmea' ? (
-        <ToolFrame onBack={() => setView('tools')}>
+        <ToolFrame onBack={() => go('tools')}>
           <FmeaTool />
         </ToolFrame>
       ) : null}
       {view === 'yield' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <YieldTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <YieldTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'oee' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <OeeTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <OeeTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'beforeafter' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <BeforeAfterTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <BeforeAfterTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'wastewalk' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <WasteWalkTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <WasteWalkTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'fives' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <FiveSTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <FiveSTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'takt' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <TaktTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <TaktTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'smed' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <SmedTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <SmedTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'copq' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <CopqTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <CopqTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'samplesize' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <SampleSizeTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <SampleSizeTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'sigma' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <SigmaTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <SigmaTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'attribute' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <AttributeChartTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <AttributeChartTool onNavigate={go} />
         </ToolFrame>
       ) : null}
       {view === 'proportions' ? (
-        <ToolFrame onBack={() => setView('tools')}>
-          <ProportionTool onNavigate={setView} />
+        <ToolFrame onBack={() => go('tools')}>
+          <ProportionTool onNavigate={go} />
         </ToolFrame>
       ) : null}
     </AppShell>
