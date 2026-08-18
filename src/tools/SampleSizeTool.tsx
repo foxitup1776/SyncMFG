@@ -139,7 +139,9 @@ export function SampleSizeTool({
       summary: `Collect ${plan.nPerGroup} ${plan.unitLabel}${plan.groups > 1 ? ` (${plan.totalN} total)` : ''} for a ${fmt(plan.power * 100, 0)}% chance of proving the difference, at ${fmt((1 - plan.alpha) * 100, 0)}% confidence. ${setup}`,
       bullets: [
         plan.detail,
-        `Critical values used: z for the false-alarm risk = ${fmt(plan.zAlpha, 3)}${plan.twoSided ? ' (two-sided)' : ' (one-sided)'}; z for power = ${fmt(plan.zBeta, 3)}.`,
+        plan.kind === 'mean2' || plan.kind === 'meanPaired'
+          ? `Same method as Minitab Power and Sample Size (noncentral t). ${plan.nPerGroup} ${plan.unitLabel} gives actual power ${fmt((plan.actualPower ?? plan.power) * 100, 1)}% against a ${fmt(plan.power * 100, 0)}% target.`
+          : `Critical values used: z for the false-alarm risk = ${fmt(plan.zAlpha, 3)}${plan.twoSided ? ' (two-sided)' : ' (one-sided)'}; z for power = ${fmt(plan.zBeta, 3)}.`,
         plan.achievedPower != null && plan.achievedN != null
           ? `With the ${plan.achievedN} you already have, power is about ${fmt(plan.achievedPower * 100, 0)}% — meaning a ${fmt(100 - plan.achievedPower * 100, 0)}% chance of missing a real difference.`
           : 'Tip: enter the sample you already have to see how much power it actually gives you.',

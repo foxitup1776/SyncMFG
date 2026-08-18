@@ -128,6 +128,88 @@ export function studentTCdf(t: number, df: number): number {
   return t > 0 ? 1 - 0.5 * ib : 0.5 * ib
 }
 
+/** Inverse of studentTCdf. */
+export function studentTQuantile(p: number, df: number): number {
+  if (!(df > 0) || !Number.isFinite(p)) return Number.NaN
+  if (p <= 0) return Number.NEGATIVE_INFINITY
+  if (p >= 1) return Number.POSITIVE_INFINITY
+  if (p === 0.5) return 0
+  const lower = p < 0.5
+  const target = lower ? 1 - p : p
+  let lo = 0
+  let hi = 1
+  while (studentTCdf(hi, df) < target) {
+    hi *= 2
+    if (hi > 1e8) break
+  }
+  for (let i = 0; i < 80; i++) {
+    const mid = (lo + hi) / 2
+    if (studentTCdf(mid, df) < target) lo = mid
+    else hi = mid
+  }
+  const t = (lo + hi) / 2
+  return lower ? -t : t
+}
+
+/**
+ * Noncentral t CDF (Lenth, Algorithm AS 243).
+ * Minitab Power and Sample Size for 2-sample / paired t is built on this.
+ */
+export function noncentralTCdf(t: number, df: number, ncp: number): number {
+  if (!(df > 0) || !Number.isFinite(t) || !Number.isFinite(ncp)) return Number.NaN
+  if (ncp === 0) return studentTCdf(t, df)
+  if (!Number.isFinite(t)) return t > 0 ? 1 : 0
+
+  const r2pi = Math.sqrt(2 / Math.PI)
+  const alnrpi = 0.5 * Math.log(Math.PI)
+  const errmax = 1e-12
+  const itrmax = 1000
+
+  let tt = t
+  let delt = ncp
+  let negdel = false
+  if (t < 0) {
+    negdel = true
+    tt = -t
+    delt = -ncp
+  }
+
+  const x = (tt * tt) / (tt * tt + df)
+  let value = 0
+  if (x > 0) {
+    const lam = delt * delt
+    let p = 0.5 * Math.exp(-0.5 * lam)
+    let q = r2pi * p * delt
+    let s = 0.5 - p
+    let a = 0.5
+    const b = 0.5 * df
+    const rxb = (1 - x) ** b
+    const albeta = alnrpi + logGamma(b) - logGamma(a + b)
+    let xodd = regularizedIncompleteBeta(x, a, b)
+    let godd = 2 * rxb * Math.exp(a * Math.log(x) - albeta)
+    let xeven = 1 - rxb
+    let geven = b * x * rxb
+    value = p * xodd + q * xeven
+    for (let en = 1; en <= itrmax; en++) {
+      a += 1
+      xodd -= godd
+      xeven -= geven
+      godd *= (x * (a + b - 1)) / a
+      geven *= (x * (a + b - 0.5)) / (a + 0.5)
+      p *= lam / (2 * en)
+      q *= lam / (2 * en + 1)
+      s -= p
+      value += p * xodd + q * xeven
+      const errbd = 2 * s * (xodd - godd)
+      if (errbd <= errmax) break
+    }
+  }
+
+  value += 0.5 * (1 - erf(delt / Math.SQRT2))
+  if (negdel) value = 1 - value
+  return clamp01(value)
+}
+
 export function fCdf(f: number, d1: number, d2: number): number {
   if (!(f > 0) || !(d1 > 0) || !(d2 > 0)) return 0
   return regularizedIncompleteBeta((d1 * f) / (d1 * f + d2), d1 / 2, d2 / 2)

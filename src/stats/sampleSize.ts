@@ -1,11 +1,12 @@
 import { normalCdf, normalQuantile } from './normal'
+import { noncentralTCdf, studentTQuantile } from './special'
 
 /**
  * “How many do I need?” planning math (power analysis).
  *
- * Normal-approximation formulas — the same ones a power calculator uses — so a
- * belt can pre-commit to a sample size instead of adding “just one more” part
- * until the p-value cooperates.
+ * Measured two-group and paired plans use Minitab’s noncentral-t power
+ * (Stat > Power and Sample Size > 2-Sample t / Paired t). Rate plans keep the
+ * normal-approximation formulas.
  */
 
 export type PlanKind = 'mean2' | 'meanPaired' | 'prop1' | 'prop2'
@@ -51,6 +52,8 @@ export interface PlanResult {
   /** Power you would actually get from `haveN`, if supplied. */
   achievedPower: number | null
   achievedN: number | null
+  /** Power at the integer n we report (Minitab’s “Actual Power”). */
+  actualPower: number | null
   warnings: string[]
   unitLabel: string
 }
@@ -82,11 +85,14 @@ export function powerAtN(input: PlanInput, n: number): number | null {
     const delta = Math.abs(input.delta ?? 0)
     const sigma = input.sigma ?? 0
     if (delta <= 0 || sigma <= 0) return null
-    const se =
-      input.kind === 'mean2'
-        ? sigma * Math.sqrt(2 / n)
-        : sigma / Math.sqrt(n)
-    return clamp01(normalCdf(delta / se - zAlpha))
+    return tTestPower({
+      n: Math.floor(n),
+      delta,
+      sigma,
+      alpha: input.alpha,
+      twoSided: input.twoSided,
+      paired: input.kind === 'meanPaired',
+    })
   }
 
   const p0 = pct(input.baselinePct)
@@ -128,12 +134,18 @@ export function planSampleSize(input: PlanInput): PlanResult | null {
     if (!(delta > 0) || !(sigma > 0)) return null
     effectSize = delta / sigma
     const paired = input.kind === 'meanPaired'
-    const multiplier = paired ? 1 : 2
-    // Normal-curve formula plus the usual small-sample cushion, because at plant
-    // sample sizes the plain z formula runs a piece or two light.
-    const raw =
-      (multiplier * (zAlpha + zBeta) ** 2) / effectSize ** 2 + zAlpha ** 2 / 4
-    nPerGroup = Math.max(2, Math.ceil(raw))
+    nPerGroup = smallestN(
+      (n) =>
+        tTestPower({
+          n,
+          delta,
+          sigma,
+          alpha,
+          twoSided: input.twoSided,
+          paired,
+        }),
+      power,
+    )
     groups = paired ? 1 : 2
     detail = paired
       ? `Effect size = gap ÷ spread of the differences = ${round(delta)} ÷ ${round(sigma)} = ${round(effectSize, 2)}. Because each part is its own control, a paired plan needs roughly half the rows of two separate groups.`
@@ -147,7 +159,6 @@ export function planSampleSize(input: PlanInput): PlanResult | null {
       warnings.push(
         'Math says a handful of pieces is enough, but never plan under about 5 per group — you also want to see the shape of the data.',
       )
-      nPerGroup = Math.max(nPerGroup, 5)
     }
   } else {
     const p0 = pct(input.baselinePct)
@@ -212,6 +223,7 @@ export function planSampleSize(input: PlanInput): PlanResult | null {
     detail,
     achievedPower,
     achievedN,
+    actualPower: powerAtN(input, nPerGroup),
     warnings,
     unitLabel: UNIT_LABELS[input.kind],
   }
@@ -247,4 +259,50 @@ function clamp01(v: number): number {
 
 function round(v: number, digits = 3): number {
   return Number(v.toFixed(digits))
+}
+
+/** Minitab 2-sample t / paired t power: noncentral t with λ = (δ/σ)√(n/2) or √n. */
+function tTestPower(opts: {
+  n: number
+  delta: number
+  sigma: number
+  alpha: number
+  twoSided: boolean
+  paired: boolean
+}): number {
+  const n = opts.n
+  const df = opts.paired ? n - 1 : 2 * n - 2
+  if (df < 1 || opts.sigma <= 0) return 0
+  const lambda = opts.paired
+    ? (opts.delta / opts.sigma) * Math.sqrt(n)
+    : (opts.delta / opts.sigma) * Math.sqrt(n / 2)
+  const tCrit = studentTQuantile(
+    opts.twoSided ? 1 - opts.alpha / 2 : 1 - opts.alpha,
+    df,
+  )
+  if (opts.twoSided) {
+    return clamp01(
+      1 -
+        noncentralTCdf(tCrit, df, lambda) +
+        noncentralTCdf(-tCrit, df, lambda),
+    )
+  }
+  return clamp01(1 - noncentralTCdf(tCrit, df, lambda))
+}
+
+/** Smallest integer n ≥ 2 whose power is at least `target`. */
+function smallestN(powerOf: (n: number) => number, target: number): number {
+  const maxN = 2_000_000
+  const meets = (n: number) => powerOf(n) >= target - 1e-12
+  if (meets(2)) return 2
+  let hi = 2
+  while (hi < maxN && !meets(hi)) hi = Math.min(maxN, hi * 2)
+  if (!meets(hi)) return maxN
+  let lo = Math.max(2, Math.floor(hi / 2))
+  while (lo < hi) {
+    const mid = Math.floor((lo + hi) / 2)
+    if (meets(mid)) hi = mid
+    else lo = mid + 1
+  }
+  return lo
 }
