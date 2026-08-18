@@ -27,23 +27,28 @@ Private Lean Six Sigma workbench — paste Excel data, run analyses, email or pr
 - Histogram / Box / Run, multi-column compare
 - I-MR with Western Electric rules, X̄-R
 - Process capability (Cp/Cpk/Pp/Ppk)
+- Attribute SPC (p / np / c / u)
 - Pareto, 2-sample t-test, ANOVA (3+ groups), scatter/regression
+- 1-proportion, 2-proportion, chi-square
+- Sample size & power (Minitab 2-sample / paired t method)
+- Process sigma / DPMO / RTY
 - Gage R&R (lite), time-study Monte Carlo
-- First-pass yield / scrap (startup vs steady), OEE lite
+- First-pass yield / scrap (startup vs steady), OEE lite, takt / SMED / COPQ
 
 **Share & setup**
 - Email, Print/PDF, optional Web3Forms send
-- Settings: extra passwords, session length
+- Settings: extra passwords, session length, how-to library
 - Installable PWA (Add to Home Screen)
 
 ## Local development
 
 ```bash
 npm install
+npm test      # golden fixtures for the statistical engines
 npm run dev
 ```
 
-Sign-in uses hashed site passwords (see `src/auth/passwords.ts`).
+`npm run build` runs the same tests before Vite, and GitHub Pages CI will not deploy if they fail. Sign-in uses hashed site passwords (see `src/auth/passwords.ts`).
 
 ## GitHub Pages
 
